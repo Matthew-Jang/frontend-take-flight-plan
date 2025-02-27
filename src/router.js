@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
 
+import BadgeList from '@/components/BadgeList.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -17,6 +19,12 @@ const router = createRouter({
       alias: '/home',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/admin/badges',
+      name: 'AdminBadges',
+      component: BadgeList, 
+      meta: { requiresAdmin: true}
     }
   ],
 });
