@@ -17,4 +17,9 @@ export default {
     return apiClient.put(`/users/${userId}`, data);
   },
 
+  deleteUser(userId) {
+    console.log("services - deleting user " + userId);
+    return apiClient.delete(`/users/${userId}`);
+  },
+
 };

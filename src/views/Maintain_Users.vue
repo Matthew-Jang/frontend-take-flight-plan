@@ -8,10 +8,10 @@ const showModal = ref(false)
 const selectedUser = ref({})
 
 const headers = [
-  { text: 'First Name', value: 'fName' },
-  { text: 'Last Name', value: 'lName' },
-  { text: 'Email', value: 'email' },
-  { text: 'Actions', value: 'actions', sortable: false },
+  { title: 'First Name', value: 'fName' },
+  { title: 'Last Name', value: 'lName' },
+  { title: 'Email', value: 'email' },
+  { title: 'Actions', value: 'actions', sortable: false },
 ]
 
 const toggleModal = () => {
@@ -41,22 +41,36 @@ const fetchUsers = async () => {
 };
 
 const saveUser = () => {
+  console.log("vue - updating user with: " + selectedUser.value.id);
+
   const data = {
     fName: selectedUser.value.fName,
     lName: selectedUser.value.lName,
     email: selectedUser.value.email
   };
-  console.log(data);
 
   UserServices.updateUser(selectedUser.value.id, data)
     .then((response) => {
-      console.log("vue - updating user with: " + response.data);
+      console.log("vue - updated user with: " + data)
       fetchUsers();
     })
     .catch((error) => {
       console.error("Vue - error updating user ", error);
     });
   toggleModal();
+};
+
+const deleteUser = (userId) => {
+  console.log("vue - deleting user with id: " +  userId)
+
+  UserServices.deleteUser(userId)
+    .then((response) => {
+      console.log("vue - deleted user: " + response.data)
+      fetchUsers();
+    })
+    .catch((error) => {
+      console.error("Vue - error updating user ", error);
+    });
 };
 
 onMounted(() => {
@@ -71,7 +85,7 @@ onMounted(() => {
         Users
       </v-card-title>
       <v-card-text>
-        <v-data-table :columns="headers" :items="users" class="elevation-1">
+        <v-data-table :headers="headers" :items="users" class="elevation-1">
           <template v-slot:item.actions="{ item }">
             <v-icon @click="editUser(item)">mdi-pencil</v-icon>
             <v-icon @click="deleteUser(item.id)" color="red">mdi-delete</v-icon>
