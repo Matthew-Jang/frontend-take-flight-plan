@@ -1,19 +1,19 @@
-import apiClient from "./apiClient";
+import apiClient from "./apiClient"; // Default import
 
 export default {
   getAllEvents() {
-    return apiClient.get("/api/events");
+    return apiClient.get("/events");
   },
   getEventById(eventId) {
-    return apiClient.get(`/api/events/${eventId}`);
+    return apiClient.get(`/events/${eventId}`);
   },
   createEvent(eventData) {
-    return apiClient.post("/api/events", eventData);
+    return apiClient.post("/events", eventData);
   },
   updateEvent(eventId, eventData) {
-    return apiClient.put(`/api/events/${eventId}`, eventData);
+    return apiClient.put(`/events/${eventId}`, eventData);
   },
   deleteEvent(eventId) {
-    return apiClient.delete(`/api/events/${eventId}`);
-  }
+    return apiClient.delete(`/events/${eventId}`);
+  },
 };
