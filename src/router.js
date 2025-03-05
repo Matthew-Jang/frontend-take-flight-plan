@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
+import AdminEvents from "./views/AdminEvents.vue";
 
 import BadgeList from '@/components/BadgeList.vue';
 import MajorList from '@/components/MajorList.vue';
@@ -22,6 +23,11 @@ const router = createRouter({
       component: Home,
     },
     {
+      path: '/admin/events',
+      alias: '/admin/events',
+      name: 'events', 
+      component: AdminEvents, 
+    },
       path: '/admin/badges',
       name: 'AdminBadges',
       component: BadgeList, 

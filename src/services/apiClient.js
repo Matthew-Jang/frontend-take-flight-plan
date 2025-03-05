@@ -3,7 +3,7 @@ import Utils from "../config/utils.js";
 import AuthServices from "./authServices.js";
 import Router from "../router.js";
 
-const baseurl = import.meta.env.VITE_APP_API_URL; // Your backend base URL
+const baseurl = import.meta.env.VITE_APP_API_URL; // Backend base URL
 const openAIBaseURL = "https://api.openai.com/v1"; // OpenAI API base URL
 
 // Create an axios instance for your backend API
@@ -16,36 +16,43 @@ const apiClient = axios.create({
     "Access-Control-Allow-Origin": "*",
     crossDomain: true,
   },
-  transformRequest: (data, headers) => {
-    const user = Utils.getStore("user");
-    if (user) {
-      const token = user.token;
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-    }
-    return JSON.stringify(data);
-  },
-  transformResponse: (data) => {
-    data = JSON.parse(data);
-
-    if (data.message?.includes("Unauthorized")) {
-      AuthServices.logoutUser(Utils.getStore("user"))
-        .then(() => {
-          Utils.removeItem("user");
-          Router.push({ name: "login" });
-        })
-        .catch((error) => console.error("Logout error:", error));
-    }
-    return data;
-  },
 });
 
-// Create an axios instance for OpenAI's API
+// Request Interceptor
+apiClient.interceptors.request.use((config) => {
+  const user = Utils.getStore("user");
+  if (user) {
+    const token = user.token;
+    if (token) config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => Promise.reject(error));
+
+// Response Interceptor
+apiClient.interceptors.response.use((response) => {
+  return response.data;
+}, async (error) => {
+  const response = error.response;
+  if (response && response.data.message?.includes("Unauthorized")) {
+    try {
+      await AuthServices.logoutUser(Utils.getStore("user"));
+      Utils.removeItem("user");
+      Router.push({ name: "login" });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  }
+  return Promise.reject(error);
+});
+
+// Create an axios instance for OpenAI API
 const chatClient = axios.create({
   baseURL: openAIBaseURL,
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`, // OpenAI API key from environment variable
+    Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`, // OpenAI API key
   },
 });
 
-export { apiClient, chatClient };
+export default apiClient; // Ensuring default export for your services
+export { chatClient };
