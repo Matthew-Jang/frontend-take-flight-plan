@@ -2,10 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
+import AdminUsers from "./views/AdminUsers.vue";
 import AdminEvents from "./views/AdminEvents.vue";
 
-import BadgeList from '@/components/BadgeList.vue';
-import MajorList from '@/components/MajorList.vue';
+import AdminBadges from './views/BadgeList.vue';
+import AdminMajors from './views/MajorList.vue';
+import admin_checklist_items from './views/Admin_Checklist_Items.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,21 +25,29 @@ const router = createRouter({
       component: Home,
     },
     {
+      path: '/admin/users',
+      name: 'admin_users', 
+      component: AdminUsers, 
+    },
+    {
       path: '/admin/events',
-      alias: '/admin/events',
-      name: 'events', 
+      name: 'admin_events', 
       component: AdminEvents, 
     },
+    {
       path: '/admin/badges',
-      name: 'AdminBadges',
-      component: BadgeList, 
-      meta: { requiresAdmin: true}
+      name: 'admin_badges',
+      component: AdminBadges, 
     },
     {
       path: '/admin/majors',
-      name: 'AdminMajors',
-      component: MajorList,
-      meta: { requiresAdmin: true } //Matt, Does this work?
+      name: 'admin_majors',
+      component: AdminMajors,
+    },
+    {
+      path: '/admin/checklist_items',
+      name: 'admin_checklist_items',
+      component: admin_checklist_items,
     }
   ],
 });

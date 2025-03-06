@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Adjust base URL to match your API endpoint
-const API_URL = process.env.VUE_APP_API_URL || 'http://localhost:8080/api';
+const API_URL = 'http://localhost:3100/flight-plan-t4';
 
 class MajorService {
   /**

@@ -158,7 +158,7 @@
   
   <script>
   import { ref, reactive, computed, onMounted } from 'vue';
-  import BadgeService from '@/services/BadgeService';
+  import BadgeService from '../services/BadgeService.js';
   
   export default {
     name: 'BadgeList',
