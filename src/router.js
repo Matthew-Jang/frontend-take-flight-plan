@@ -7,6 +7,8 @@ import AdminEvents from "./views/Admin_Events.vue";
 
 import AdminBadges from './views/Admin_Badges.vue';
 import AdminMajors from './views/Admin_Majors.vue';
+import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
+import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +47,16 @@ const router = createRouter({
       name: 'admin_majors',
       component: AdminMajors,
     },
+    {
+      path: '/admin/checklist_items',
+      name: 'admin_checklist_items',
+      component: AdminChecklistItems,
+    },
+    {
+      path: '/admin/flight_plan',
+      name: 'admin_flight_plan', 
+      component: AdminFlightPlan,
+    }
   ],
 });
 
