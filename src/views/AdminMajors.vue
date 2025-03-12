@@ -165,8 +165,8 @@
 
 <script>
 import { ref, reactive, computed, onMounted } from 'vue';
-import MajorService from '@/services/MajorService';
-import DepartmentService from '@/services/DepartmentService';
+import MajorService from '../services/majorServices';
+import DepartmentService from '../services/departmentServices';
 
 export default {
   name: 'MajorList',
