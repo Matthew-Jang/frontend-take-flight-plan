@@ -1,32 +1,26 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Utils from "../config/utils";
+import Utils from "../config/utils.js";
 import UserServices from '../services/userServices.js'
-
 const users = ref([])
 const showModal = ref(false)
 const selectedUser = ref({})
-
 const headers = [
   { title: 'First Name', value: 'fName' },
   { title: 'Last Name', value: 'lName' },
   { title: 'Email', value: 'email' },
   { title: 'Actions', value: 'actions', sortable: false },
 ]
-
 const toggleModal = () => {
   showModal.value = !showModal.value;
 };
-
 const editUser = (item) => {
   selectedUser.value = item;
   toggleModal();
   console.log("Selected User " + selectedUser.value.fName)
 };
-
 const editedIndex = ref(-1)
 const editedItem = ref({ fName: '', lName: '', email: '' })
-
 const fetchUsers = async () => {
   console.log("vue - fetch users")
   try {
@@ -39,16 +33,13 @@ const fetchUsers = async () => {
     console.error("Error fetching users:", error);
   }
 };
-
 const saveUser = () => {
   console.log("vue - updating user with: " + selectedUser.value.id);
-
   const data = {
     fName: selectedUser.value.fName,
     lName: selectedUser.value.lName,
     email: selectedUser.value.email
   };
-
   UserServices.updateUser(selectedUser.value.id, data)
     .then((response) => {
       console.log("vue - updated user with: " + data)
@@ -59,10 +50,8 @@ const saveUser = () => {
     });
   toggleModal();
 };
-
 const deleteUser = (userId) => {
   console.log("vue - deleting user with id: " +  userId)
-
   UserServices.deleteUser(userId)
     .then((response) => {
       console.log("vue - deleted user: " + response.data)
@@ -72,7 +61,6 @@ const deleteUser = (userId) => {
       console.error("Vue - error updating user ", error);
     });
 };
-
 onMounted(() => {
   fetchUsers()
 })
@@ -111,6 +99,6 @@ onMounted(() => {
       </v-card>
     </v-dialog>
     <!-- End Modal -->
-     
+
   </v-container>
 </template>
