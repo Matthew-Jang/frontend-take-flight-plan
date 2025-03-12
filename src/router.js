@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
-import AdminUsers from "./views/AdminUsers.vue";
-import AdminEvents from "./views/AdminEvents.vue";
+import AdminUsers from "./views/Admin_Users.vue";
+import AdminEvents from "./views/Admin_Events.vue";
 
-import AdminBadges from './views/AdminBadges.vue';
-import AdminMajors from './views/AdminMajors.vue';
+import AdminBadges from './views/Admin_Badges.vue';
+import AdminMajors from './views/Admin_Majors.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
