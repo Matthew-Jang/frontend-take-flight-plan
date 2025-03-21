@@ -1,113 +1,71 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import ChecklistItemServices from '../services/ChecklistItemServices'; // Ensure this is the correct path
+
+const semesters = ref([]);
+const semesterTitles = [
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8',
+];
+
+// Initialize eight cards
+for (let i = 0; i < 8; i++) {
+  semesters.value.push({
+    id: i + 1,
+    title: semesterTitles[i],
+    checklist_items: [],
+  });
+}
+
+const fetchChecklistItems = async () => {
+  console.log('Vue - fetching checklist items');
+  try {
+    const response = await ChecklistItemServices.fetchChecklistItems();
+
+    const items = response.data;
+
+    items.forEach((item) => {
+      const semesterIndex = item.semesters_til_graduation - 1; // Adjust for zero-based index
+      if (semesterIndex >= 0 && semesterIndex < semesters.value.length) {
+        semesters.value[semesterIndex].checklist_items.push(item.name); // Assuming item.name is the checklist item
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching checklist items:', error);
+  }
+};
+
+onMounted(() => {
+  fetchChecklistItems();
+});
+</script>
+
 <template>
-    <div class="admin-flight-plan">
-      <v-card class="main-card">
-        <div class="scrollable-section">
-          <v-row no-gutters>
-            <v-col
-              v-for="card in cards"
-              :key="card.id"
-              class="scrollable-card"
-            >
-              <v-card class="card-container">
-                <v-card-title>{{ card.title }}</v-card-title>
-                <v-card-text>
-                  <v-list dense>
-                    <v-list-item
-                      v-for="(item, index) in card.checklist"
-                      :key="index"
-                    >
-                      <v-list-item-content>{{ item }}</v-list-item-content>
-                      <v-list-item-action>
-                        <v-btn icon small @click="removeItem(card.id, index)">
-                          <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-list>
-                  <v-text-field
-                    v-model="card.newItem"
-                    label="New checklist item"
-                    dense
-                    outlined
-                  ></v-text-field>
-                  <v-btn small color="primary" @click="addItem(card.id)">
-                    Add Item
-                  </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <!-- Additional column for a + button at the far right if desired -->
-            <v-col class="add-button-container" cols="auto">
-              <v-btn icon large>
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </div>
-      </v-card>
-    </div>
-  </template>
-  
-  <script setup>
-  import { reactive } from 'vue';
-  
-  let nextCardId = 1;
-  const cards = reactive([
-    { id: nextCardId++, title: 'Card 1', checklist: ['Item 1', 'Item 2'], newItem: '' },
-    { id: nextCardId++, title: 'Card 2', checklist: ['Task 1'], newItem: '' },
-    { id: nextCardId++, title: 'Card 3', checklist: [], newItem: '' },
-    // You can add more cards here if needed.
-  ]);
-  
-  function addItem(cardId) {
-    const card = cards.find(c => c.id === cardId);
-    if (card && card.newItem.trim() !== '') {
-      card.checklist.push(card.newItem.trim());
-      card.newItem = '';
-    }
-  }
-  
-  function removeItem(cardId, index) {
-    const card = cards.find(c => c.id === cardId);
-    if (card) {
-      card.checklist.splice(index, 1);
-    }
-  }
-  </script>
-  
-  <style scoped>
-  .admin-flight-plan {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .main-card {
-    width: 70%;
-    padding: 20px;
-  }
-  
-  .scrollable-section {
-    display: flex;
-    flex-wrap: nowrap; /* ensure a single row */
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 10px;
-  }
-  
-  .scrollable-card {
-    position: relative;
-    display: inline-block;
-    width: 300px;
-    margin-right: 10px;
-  }
-  
-  /* Optional styling for the + button container */
-  .add-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  </style>
-  
+  <v-container>
+    <v-card>
+      <v-card-title>
+        <span class="headline">Flight Plan</span>
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col v-for="semester in semesters" :key="semester.id" cols="12" md="6">
+            <v-card>
+              <v-card-title>{{ semester.title }}</v-card-title>
+              <v-card-text>
+                <ul>
+                  <li v-for="item in semester.checklist_items" :key="item">{{ item }}</li>
+                </ul>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-container>
+</template>
