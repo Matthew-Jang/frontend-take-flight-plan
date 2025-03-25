@@ -20,6 +20,33 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      user: {
+        name: "Michael",
+        points: 1500,
+        avatar: "",
+        badges: [
+          { name: "Early Bird", imageUrl: require('@/assets/images/badge0.png') },
+          { name: "The Worm", imageUrl: require('@/assets/images/badge1.png') },
+          { name: "OC Eagle", imageUrl: require('@/assets/images/badge2.png') }
+        ]
+      }
+    };
+  },
+  methods: {
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.user.avatar = URL.createObjectURL(file);
+      }
+    }
+  }
+};
+</script>
+
 <style scoped>
 .profile-card {
   background-color: #1e1e1e;
