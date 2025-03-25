@@ -19,3 +19,62 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.profile-card {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+input[type="file"] {
+  margin-bottom: 20px;
+  padding: 5px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+input[type="file"]:hover {
+  background-color: #555;
+}
+
+/* Badge Styling */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.badge {
+  text-align: center;
+}
+
+.badge-img {
+  width: 50px; /* Image size */
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.badge p {
+  margin: 0;
+  font-size: 14px;
+  text-transform: capitalize;
+  color: #fff;
+}
+</style>
