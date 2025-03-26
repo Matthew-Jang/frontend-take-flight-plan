@@ -22,4 +22,8 @@ export default {
     return apiClient.delete(`/users/${userId}`);
   },
 
+  modifyPoints(userId, payload) {
+    console.log(`services - modifying points for user ${userId}`, payload);
+    return apiClient.patch(`/users/${userId}/points`, payload);
+  },
 };
