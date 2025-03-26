@@ -9,6 +9,8 @@ import AdminRedeem from "./views/Admin_Redeem.vue";
 import AdminBadges from './views/Admin_Badges.vue';
 import AdminMajors from './views/Admin_Majors.vue';
 
+import Events from './views/Events.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -50,6 +52,11 @@ const router = createRouter({
       path: '/admin/redeem',
       name: 'admin_redeem',
       component: AdminRedeem,
+    },
+    {
+      path: '/events',
+      name: 'events',
+      component: Events,
     },
   ],
 });
