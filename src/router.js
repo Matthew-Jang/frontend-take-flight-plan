@@ -8,6 +8,8 @@ import AdminEvents from "./views/Admin_Events.vue";
 import AdminBadges from './views/Admin_Badges.vue';
 import AdminMajors from './views/Admin_Majors.vue';
 
+import Events from './views/Events.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -44,6 +46,22 @@ const router = createRouter({
       path: '/admin/majors',
       name: 'admin_majors',
       component: AdminMajors,
+    },
+
+
+
+
+
+
+
+
+
+
+
+    {
+      path: '/events',
+      name: 'events',
+      component: Events,
     },
   ],
 });
