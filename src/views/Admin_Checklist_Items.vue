@@ -51,7 +51,7 @@ const addItem = () => {
     item_type: selectedItem.value.item_type,
     description: selectedItem.value.description,
     points: selectedItem.value.points,
-    semesters_til_graduation: selectedItem.value.semesters_til_graduation,
+    semester_number: selectedItem.value.semester_number,
   };
 
   ChecklistItemServices.createChecklistItem(data)
@@ -88,7 +88,7 @@ const saveItem = () => {
     item_type: selectedItem.value.item_type,
     description: selectedItem.value.description,
     points: selectedItem.value.points,
-    semesters_til_graduation: selectedItem.value.semesters_til_graduation,
+    semester_number: selectedItem.value.semester_number,
   };
 
   ChecklistItemServices.updateChecklistItem(selectedItem.value.id, data)
@@ -156,7 +156,7 @@ onMounted(() => {
 
           <v-text-field v-model="selectedItem.points" label="Points" type="number" required></v-text-field>
 
-          <v-text-field v-model="selectedItem.semesters_til_graduation" label="Semesters Til Graduation" type="number"
+          <v-text-field v-model="selectedItem.semester_number" label="Semester Number" type="number"
             required></v-text-field>
 
           <v-card-actions>
