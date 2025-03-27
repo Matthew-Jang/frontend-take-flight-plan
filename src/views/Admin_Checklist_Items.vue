@@ -21,7 +21,7 @@ const headers = [
   { title: 'Item Type', value: 'item_type' },
   { title: 'Description', value: 'description' },
   { title: 'Points', value: 'points' },
-  { title: 'Semesters Til Graduation', value: 'semesters_til_graduation' },
+  { title: 'Semester Number', value: 'semester_number' },
   { title: 'Actions', value: 'actions', sortable: false },
 ]
 
