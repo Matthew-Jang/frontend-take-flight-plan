@@ -10,7 +10,8 @@ const filterDate = ref('');
 const fetchEvents = async () => {
   try {
     const res = await EventServices.getAllEvents();
-    events.value = res.data;
+    console.log("Fetched events:", res.data);
+    events.value = res.data; // Ensure this is an array
   } catch (err) {
     console.error("Error fetching events:", err);
   }
@@ -18,20 +19,27 @@ const fetchEvents = async () => {
 
 const filteredEvents = computed(() => {
   return events.value.filter((event) => {
-    const textMatch = (
-      event.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      event.description?.toLowerCase().includes(search.value.toLowerCase()) ||
-      event.event_type?.toLowerCase().includes(search.value.toLowerCase()) ||
-      event.location?.toLowerCase().includes(search.value.toLowerCase())
-    );
+    // Use fallback values if any field is missing
+    const name = (event.name || '').toLowerCase();
+    const description = (event.description || '').toLowerCase();
+    const eventType = (event.event_type || '').toLowerCase();
+    const location = (event.location || '').toLowerCase();
+    const date = (event.date || '');
+
+    const searchLower = search.value.toLowerCase();
+
+    const textMatch =
+      name.includes(searchLower) ||
+      description.includes(searchLower) ||
+      eventType.includes(searchLower) ||
+      location.includes(searchLower);
 
     const typeMatch = filterType.value
-      ? event.event_type?.toLowerCase() === filterType.value.toLowerCase()
+      ? eventType === filterType.value.toLowerCase()
       : true;
 
-    const dateMatch = filterDate.value
-      ? event.date?.startsWith(filterDate.value)
-      : true;
+    // If the date is stored as a string in the format "YYYY-MM-DD..." then startsWith works.
+    const dateMatch = filterDate.value ? date.startsWith(filterDate.value) : true;
 
     return textMatch && typeMatch && dateMatch;
   });
@@ -74,12 +82,12 @@ onMounted(fetchEvents);
 
         <v-data-table
           :headers="[
-            { title: 'Name', value: 'name' },
-            { title: 'Type', value: 'event_type' },
-            { title: 'Date', value: 'date' },
-            { title: 'Start Time', value: 'start_time' },
-            { title: 'End Time', value: 'end_time' },
-            { title: 'Location', value: 'location' }
+            { text: 'Name', value: 'name' },
+            { text: 'Type', value: 'event_type' },
+            { text: 'Date', value: 'date' },
+            { text: 'Start Time', value: 'start_time' },
+            { text: 'End Time', value: 'end_time' },
+            { text: 'Location', value: 'location' }
           ]"
           :items="filteredEvents"
           class="elevation-1"
