@@ -8,8 +8,6 @@ const router = useRouter();
 const fName = ref("");
 const lName = ref("");
 const user = ref({});
-const userEmail = googleUser.getBasicProfile().getEmail();
-const allowedDomain = "@oc.eagles.edu" //what's the one for staff?
 
 const loginWithGoogle = () => {
   window.handleCredentialResponse = handleCredentialResponse;
@@ -29,11 +27,37 @@ const loginWithGoogle = () => {
     width: 400,
   });
 };
+  
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
+}
 
 const handleCredentialResponse = async (response) => {
+  const jwt = parseJwt(response.credential);
+  const email = jwt.email;
+  const allowedDomains = ["@oc.eagles.edu", "@oc.edu"]; //is oc.edu the staff one?
+
+  const isValid = allowedDomains.some((domain) =>
+    email.endsWith(domain)
+  );
+
+  if (!isValid) {
+    alert("Only OC school emails are allowed.");
+    return;
+  }
+  
   let token = {
     credential: response.credential,
   };
+  
   await AuthServices.loginUser(token)
     .then((response) => {
       user.value = response.data;
