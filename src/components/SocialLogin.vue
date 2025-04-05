@@ -8,6 +8,8 @@ const router = useRouter();
 const fName = ref("");
 const lName = ref("");
 const user = ref({});
+const userEmail = googleUser.getBasicProfile().getEmail();
+const allowedDomain = "@oc.eagles.edu" //what's the one for staff?
 
 const loginWithGoogle = () => {
   window.handleCredentialResponse = handleCredentialResponse;
