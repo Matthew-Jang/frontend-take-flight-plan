@@ -8,6 +8,8 @@ const router = useRouter();
 const fName = ref("");
 const lName = ref("");
 const user = ref({});
+const showError = ref(false);
+const erroMessage = ref("");
 
 const loginWithGoogle = () => {
   window.handleCredentialResponse = handleCredentialResponse;
@@ -50,7 +52,9 @@ const handleCredentialResponse = async (response) => {
   );
 
   if (!isValid) {
-    alert("Only OC school emails are allowed.");
+    //alert("Only OC school emails are allowed.");
+    showError.value = true;
+    errorMessage.value = "Only OC school emails are allowed.";
     return;
   }
   
@@ -80,6 +84,12 @@ onMounted(() => {
   <div class="signup-buttons">
     <v-row justify="center">
       <div display="flex" id="parent_id"></div>
+    </v-row>
+    
+    <v-row justify="center" class="mt-4" v-if="showError">
+      <v-alert type="error" variant="tonal" border="start" color="red" class="w-75">
+        {{ errorMessage }}
+      </v-alert>
     </v-row>
   </div>
 </template>
