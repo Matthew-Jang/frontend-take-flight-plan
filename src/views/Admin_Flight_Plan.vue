@@ -1,10 +1,19 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import ChecklistItemServices from '../services/ChecklistItemServices'; // Ensure this is the correct path
+import { ref, reactive, onMounted } from 'vue';
+import ChecklistItemServices from '../services/ChecklistItemServices';
+import FlightPlanItemServices from '../services/flightPlanItemServices';
 
 let currentDraggedItem = null;
-const semesters = ref([]);
+
+// lists
 const items = ref([]);
+const flight_plan_items = ref([]);
+
+//lookup table
+const checklistMap = reactive({});
+
+//semester info
+const semesters = ref([]);
 const semesterTitles = [
   'Semester 1',
   'Semester 2',
@@ -26,38 +35,50 @@ for (let i = 0; i < 8; i++) {
 }
 
 const fetchChecklistItems = async () => {
-  console.log('Vue - fetching checklist items');
-  try {
-    const response = await ChecklistItemServices.fetchChecklistItems();
+  const { data } = await ChecklistItemServices.fetchAll();
+  items.value = data;
+  data.forEach(item => {
+    checklistMap[item.id] = item;
+  });
+};
 
-    items.value = response.data;
+const fetchFlightPlanItems = async () => {
+  const { data } = await FlightPlanItemServices.fetchAll();
+  flight_plan_items.value = data;
+  // clear old
+  semesters.value.forEach(s => s.flight_plan_items = []);
+  // distribute
+  data.forEach(fpi => {
+    const idx = fpi.semester_number - 1;
+    if (semesters.value[idx]) {
+      semesters.value[idx].flight_plan_items.push(fpi);
+    }
+  });
+};
 
-    items.value.forEach((item) => {
-      const semesterIndex = item.semester_number - 1; // Adjust for zero-based index
-      if (semesterIndex >= 0 && semesterIndex < semesters.value.length) {
-        semesters.value[semesterIndex].checklist_items.push(item); // Assuming item.name is the checklist item
+// Save: update all flight plan items’ semester_numbers
+const saveFlightPlan = async () => {
+  for (const sem of semesters.value) {
+    for (const fpi of sem.flight_plan_items) {
+      if (fpi.semester_number !== sem.id) {
+        fpi.semester_number = sem.id;
+        await FlightPlanItemServices.update(fpi.id, fpi);
       }
-    });
-  } catch (error) {
-    console.error('Error fetching checklist items:', error);
+    }
   }
 };
 
-const saveFlightPlan = async () => {
-  console.log('Vue - saving flight plan');
+const deleteFlightPlanItem = async (fpi) => {
+  try {
+    await FlightPlanItemServices.delete(fpi.id);
 
-  // Use semesters.value since semesters is a ref
-  for (const semester of semesters.value) {
-    for (const item of semester.checklist_items) {
-      item.semester_number = semester.id;
-      try {
-        console.log("Updating checklist item", item);
-        await ChecklistItemServices.updateChecklistItem(item.id, item);
-        console.log(`Checklist item ${item.id} updated successfully`);
-      } catch (error) {
-        console.error(`Error updating checklist item ${item.id}:`, error);
-      }
+    const sem = semesters.value.find(s => s.id === fpi.semester_number);
+    if (sem) {
+      const idx = sem.flight_plan_items.findIndex(x => x.id === fpi.id);
+      if (idx > -1) sem.flight_plan_items.splice(idx, 1);
     }
+  } catch (err) {
+    console.error(`Failed to delete flight plan item ${fpi.id}:`, err);
   }
 };
 
@@ -72,42 +93,87 @@ const dragoverHandler = (event) => {
   event.preventDefault();
 };
 
-const dropHandler = (semester, event) => {
-  console.log('Vue - dropHandler');
-  event.preventDefault();
-
-  for (const semester of semesters.value) {
-    const index = semester.checklist_items.indexOf(currentDraggedItem);
-    if (index > -1) {
-      semester.checklist_items.splice(index, 1);
-      break;
-    }
-  }
-
-  currentDraggedItem.semester_number = semester.id;
-  semester.checklist_items.push(currentDraggedItem);
+const dropHandler = async (semester, ev) => {
+  ev.preventDefault();
+  // create on server
+  const payload = {
+    checklist_item_id: currentDraggedItem.id,
+    semester_number: semester.id,
+  };
+  const { data: newFpi } = await FlightPlanItemServices.create(payload);
+  // add locally
+  semester.flight_plan_items.push(newFpi);
   currentDraggedItem = null;
 };
 
+
 onMounted(() => {
-  fetchChecklistItems();
+ fetchChecklistItems();
+ fetchFlightPlanItems();
 });
 </script>
 
 <template>
   <v-container>
+
+    <!-- 1) Tasks & Experiences -->
+    <v-card class="mb-6">
+      <v-card-title>Tasks & Experiences</v-card-title>
+      <v-card-text>
+        <v-list>
+          <v-list-item
+            v-for="ci in items"
+            :key="ci.id"
+            :id="`item-${ci.id}`"
+            draggable="true"
+            @dragstart="dragstartHandler(ci, $event)"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ ci.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ ci.points }} pts</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
+
+    <!-- 2) Flight Plan -->
     <v-card>
       <v-card-title>
-        <span class="headline">Flight Plan</span>
-        <v-btn color="green" @click="saveFlightPlan()">Save</v-btn>
+        Flight Plan
+        <v-spacer />
+        <v-btn color="green" @click="saveFlightPlan">Save</v-btn>
       </v-card-title>
       <v-card-text>
         <v-row>
-          <v-col v-for="semester in semesters" :key="semester.id" cols="12" md="6">
-            <v-card>
-              <v-card-title>{{ semester.title }}</v-card-title>
-              <v-card-text @drop="dropHandler(semester, $event)" @dragover="dragoverHandler">
-                <v-card v-for="item in semester.checklist_items" :key="item"><a :id="`item-${item.id}`" draggable="true" @dragstart="dragstartHandler(item,$event)">{{ item.name }} {{ item.points }}</a>
+          <v-col
+            v-for="sem in semesters"
+            :key="sem.id"
+            cols="12" md="6"
+          >
+            <v-card class="mb-4">
+              <v-card-title>{{ sem.title }}</v-card-title>
+              <v-card-text
+                class="min-h-100"
+                @drop="dropHandler(sem, $event)"
+                @dragover="dragoverHandler"
+              >
+                <v-card
+                  v-for="fpi in sem.flight_plan_items"
+                  :key="fpi.id"
+                  class="mb-2 pa-2"
+                  :id="`fpi-${fpi.id}`"
+                  draggable="true"
+                  @dragstart="dragstartHandler(fpi, $event)"
+                >
+                  <!-- lookup name/points from checklistMap -->
+                  {{ checklistMap[fpi.checklist_item_id].name }}
+                  ({{ checklistMap[fpi.checklist_item_id].points }} pts)
+
+                  <!-- Trash icon -->
+                    <v-btn icon small color="red" @click="deleteFlightPlanItem(fpi)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
                 </v-card>
               </v-card-text>
             </v-card>
@@ -115,5 +181,6 @@ onMounted(() => {
         </v-row>
       </v-card-text>
     </v-card>
+
   </v-container>
 </template>

@@ -21,7 +21,6 @@ const headers = [
   { title: 'Item Type', value: 'item_type' },
   { title: 'Description', value: 'description' },
   { title: 'Points', value: 'points' },
-  { title: 'Semester Number', value: 'semester_number' },
   { title: 'Actions', value: 'actions', sortable: false },
 ]
 
@@ -54,7 +53,7 @@ const addItem = () => {
     semester_number: selectedItem.value.semester_number,
   };
 
-  ChecklistItemServices.createChecklistItem(data)
+  ChecklistItemServices.create(data)
     .then((response) => {
       console.log("Vue - created checklist item", data)
       fetchChecklistItems();
@@ -68,7 +67,7 @@ const addItem = () => {
 const fetchChecklistItems = async () => {
   console.log("Vue - fetching checklist items")
   try {
-    const response = await ChecklistItemServices.fetchChecklistItems()
+    const response = await ChecklistItemServices.fetchAll()
     // Map each item to include an isEditing flag if needed
     checklistItems.value = response.data.map((item) => ({
       ...item,
@@ -91,7 +90,7 @@ const saveItem = () => {
     semester_number: selectedItem.value.semester_number,
   };
 
-  ChecklistItemServices.updateChecklistItem(selectedItem.value.id, data)
+  ChecklistItemServices.update(selectedItem.value.id, data)
     .then((response) => {
       console.log("Vue - updated checklist item", data)
       fetchChecklistItems();
@@ -105,7 +104,7 @@ const saveItem = () => {
 const deleteItem = (itemId) => {
   console.log("Vue - deleting checklist item with id: " + itemId)
 
-  ChecklistItemServices.deleteChecklistItem(itemId)
+  ChecklistItemServices.delete(itemId)
     .then((response) => {
       console.log("Vue - deleted checklist item", response.data)
       fetchChecklistItems();
