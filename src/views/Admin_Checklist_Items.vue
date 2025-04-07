@@ -21,7 +21,6 @@ const headers = [
   { title: 'Item Type', value: 'item_type' },
   { title: 'Description', value: 'description' },
   { title: 'Points', value: 'points' },
-  { title: 'Semesters Til Graduation', value: 'semesters_til_graduation' },
   { title: 'Actions', value: 'actions', sortable: false },
 ]
 
@@ -51,10 +50,10 @@ const addItem = () => {
     item_type: selectedItem.value.item_type,
     description: selectedItem.value.description,
     points: selectedItem.value.points,
-    semesters_til_graduation: selectedItem.value.semesters_til_graduation,
+    semester_number: selectedItem.value.semester_number,
   };
 
-  ChecklistItemServices.createChecklistItem(data)
+  ChecklistItemServices.create(data)
     .then((response) => {
       console.log("Vue - created checklist item", data)
       fetchChecklistItems();
@@ -68,7 +67,7 @@ const addItem = () => {
 const fetchChecklistItems = async () => {
   console.log("Vue - fetching checklist items")
   try {
-    const response = await ChecklistItemServices.fetchChecklistItems()
+    const response = await ChecklistItemServices.fetchAll()
     // Map each item to include an isEditing flag if needed
     checklistItems.value = response.data.map((item) => ({
       ...item,
@@ -88,10 +87,10 @@ const saveItem = () => {
     item_type: selectedItem.value.item_type,
     description: selectedItem.value.description,
     points: selectedItem.value.points,
-    semesters_til_graduation: selectedItem.value.semesters_til_graduation,
+    semester_number: selectedItem.value.semester_number,
   };
 
-  ChecklistItemServices.updateChecklistItem(selectedItem.value.id, data)
+  ChecklistItemServices.update(selectedItem.value.id, data)
     .then((response) => {
       console.log("Vue - updated checklist item", data)
       fetchChecklistItems();
@@ -105,7 +104,7 @@ const saveItem = () => {
 const deleteItem = (itemId) => {
   console.log("Vue - deleting checklist item with id: " + itemId)
 
-  ChecklistItemServices.deleteChecklistItem(itemId)
+  ChecklistItemServices.delete(itemId)
     .then((response) => {
       console.log("Vue - deleted checklist item", response.data)
       fetchChecklistItems();
@@ -156,7 +155,7 @@ onMounted(() => {
 
           <v-text-field v-model="selectedItem.points" label="Points" type="number" required></v-text-field>
 
-          <v-text-field v-model="selectedItem.semesters_til_graduation" label="Semesters Til Graduation" type="number"
+          <v-text-field v-model="selectedItem.semester_number" label="Semester Number" type="number"
             required></v-text-field>
 
           <v-card-actions>
