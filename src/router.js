@@ -4,11 +4,15 @@ import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
 import AdminUsers from "./views/Admin_Users.vue";
 import AdminEvents from "./views/Admin_Events.vue";
+import AdminRedeem from "./views/Admin_Redeem.vue";
 
 import AdminBadges from './views/Admin_Badges.vue';
 import AdminMajors from './views/Admin_Majors.vue';
 import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
+
+import Events from './views/Events.vue';
+import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +50,16 @@ const router = createRouter({
       path: '/admin/majors',
       name: 'admin_majors',
       component: AdminMajors,
+    },
+    {
+      path: '/admin/redeem',
+      name: 'admin_redeem',
+      component: AdminRedeem,
+    },
+    {
+      path: '/events',
+      name: 'events',
+      component: Events,
     },
     {
       path: '/admin/checklist_items',
