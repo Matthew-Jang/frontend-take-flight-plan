@@ -19,6 +19,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'UserProfile',
+      component: UserProfile
+    },
+    {
+      path: '/',
       alias: '/login',
       name: 'login', 
       component: Login, 
