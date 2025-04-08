@@ -12,7 +12,6 @@ import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
 
 import Events from './views/Events.vue';
-import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
