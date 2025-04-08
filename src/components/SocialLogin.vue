@@ -9,7 +9,7 @@ const fName = ref("");
 const lName = ref("");
 const user = ref({});
 const showError = ref(false);
-const erroMessage = ref("");
+const errorMessage = ref("");
 
 const loginWithGoogle = () => {
   window.handleCredentialResponse = handleCredentialResponse;
@@ -45,7 +45,7 @@ function parseJwt(token) {
 const handleCredentialResponse = async (response) => {
   const jwt = parseJwt(response.credential);
   const email = jwt.email;
-  const allowedDomains = ["@oc.eagles.edu", "@oc.edu"]; //is oc.edu the staff one?
+  const allowedDomains = ["@eagles.oc.edu", "@oc.edu"]; //is oc.edu the staff one?
 
   const isValid = allowedDomains.some((domain) =>
     email.endsWith(domain)

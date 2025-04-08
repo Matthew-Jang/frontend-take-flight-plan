@@ -30,11 +30,7 @@
           :search="search"
           :loading="loading"
           class="elevation-1"
-        >
-          <template v-slot:item.type="{ item }">
-            {{ getBadgeTypeName(item.type) }}
-          </template>
-          
+        > 
           <template v-slot:item.actions="{ item }">
             <v-icon
               size="small"
@@ -65,7 +61,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-select
+                  <!-- <v-select
                     v-model="editedItem.type"
                     :items="badgeTypes"
                     item-title="name"
@@ -73,7 +69,7 @@
                     label="Badge Type*"
                     required
                     :error-messages="typeError"
-                  ></v-select>
+                  ></v-select> -->
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
@@ -174,13 +170,13 @@
       const snackbarColor = ref('success');
       
       // Form validation errors
-      const typeError = ref('');
+      // const typeError = ref('');
       const titleError = ref('');
       const descriptionError = ref('');
   
       const headers = [
-        { title: 'ID', align: 'start', key: 'id' },
-        { title: 'Type', align: 'start', key: 'type' },
+        // { title: 'ID', align: 'start', key: 'id' },
+        // { title: 'Type', align: 'start', key: 'type' },
         { title: 'Title', align: 'start', key: 'title' },
         { title: 'Description', align: 'start', key: 'description' },
         { title: 'Points', align: 'start', key: 'points' },
@@ -189,8 +185,8 @@
       ];
   
       const defaultItem = {
-        id: null,
-        type: 1,
+        // id: null,
+        // type: 1,
         title: '',
         description: '',
         points: 0,
@@ -200,12 +196,12 @@
       const editedItem = reactive({ ...defaultItem });
       const editedIndex = ref(-1);
   
-      const badgeTypes = [
-        { id: 1, name: 'Achievement' },
-        { id: 2, name: 'Participation' },
-        { id: 3, name: 'Special' },
-        { id: 4, name: 'Milestone' }
-      ];
+      // const badgeTypes = [
+      //   { id: 1, name: 'Achievement' },
+      //   { id: 2, name: 'Participation' },
+      //   { id: 3, name: 'Special' },
+      //   { id: 4, name: 'Milestone' }
+      // ];
   
       const formTitle = computed(() => {
         return editedIndex.value === -1 ? 'New Badge' : 'Edit Badge';
@@ -215,7 +211,7 @@
       const fetchBadges = async () => {
         loading.value = true;
         try {
-          const response = await BadgeService.getAll();
+          const response = await BadgeService.fetchAll();
           badges.value = response.data;
         } catch (error) {
           console.error('Error fetching badges:', error);
@@ -226,10 +222,10 @@
       };
   
       // Get badge type name based on type ID
-      const getBadgeTypeName = (typeId) => {
-        const type = badgeTypes.find(t => t.id === typeId);
-        return type ? type.name : 'Unknown';
-      };
+      // const getBadgeTypeName = (typeId) => {
+      //   const type = badgeTypes.find(t => t.id === typeId);
+      //   return type ? type.name : 'Unknown';
+      // };
   
       // Open dialog for create/edit
       const openDialog = (item) => {
@@ -261,10 +257,10 @@
         // Reset errors
         resetValidation();
         
-        if (!editedItem.type) {
-          typeError.value = 'Badge type is required';
-          isValid = false;
-        }
+        // if (!editedItem.type) {
+        //   typeError.value = 'Badge type is required';
+        //   isValid = false;
+        // }
         
         if (!editedItem.title || editedItem.title.trim() === '') {
           titleError.value = 'Title is required';
@@ -281,7 +277,7 @@
   
       // Reset validation errors
       const resetValidation = () => {
-        typeError.value = '';
+        // typeError.value = '';
         titleError.value = '';
         descriptionError.value = '';
       };
@@ -365,12 +361,12 @@
         editedIndex,
         defaultItem,
         formTitle,
-        badgeTypes,
-        typeError,
+        // badgeTypes,
+        // typeError,
         titleError,
         descriptionError,
         fetchBadges,
-        getBadgeTypeName,
+        // getBadgeTypeName,
         openDialog,
         closeDialog,
         save,
