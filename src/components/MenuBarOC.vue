@@ -38,7 +38,6 @@ const logout = () => {
     .catch((error) => {
       console.log("error", error);
     });
-
     router.push({ name: "login" });
 };
 
@@ -70,9 +69,11 @@ onMounted(() => {
         <v-btn class="mx-2" :to="{ name: 'add' }"> Add Tutorial </v-btn> -->
         <v-btn class="mx-2" :to="{ name: 'home' }"> home </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_users' }"> users </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_events' }"> events </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_events' }"> admin_events </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_badges' }"> badges </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_majors' }"> majors </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_redeem' }"> redeem </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'events' }"> events </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_checklist_items' }"> check </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }"> flight </v-btn>
       </div>
