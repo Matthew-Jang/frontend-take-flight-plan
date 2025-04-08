@@ -30,7 +30,7 @@ for (let i = 0; i < 8; i++) {
   semesters.value.push({
     id: i + 1,
     title: semesterTitles[i],
-    checklist_items: [],
+    flight_plan_items: [],
   });
 }
 
@@ -107,9 +107,9 @@ const dropHandler = async (semester, ev) => {
 };
 
 
-onMounted(() => {
- fetchChecklistItems();
- fetchFlightPlanItems();
+onMounted(async () => {
+ await fetchChecklistItems();
+ await fetchFlightPlanItems();
 });
 </script>
 
