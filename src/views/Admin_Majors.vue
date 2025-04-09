@@ -72,17 +72,17 @@
                   :error-messages="nameError"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12">
+<!--               <v-col cols="12">
                 <v-text-field
                   v-model="editedItem.code"
                   label="Major Code*"
                   required
                   :error-messages="codeError"
                 ></v-text-field>
-              </v-col>
+              </v-col> -->
               <v-col cols="12">
                 <v-select
-                  v-model="editedItem.departmentId"
+                  v-model="editedItem.department"
                   :items="departments"
                   item-title="name"
                   item-value="id"
@@ -91,7 +91,7 @@
                   :error-messages="departmentError"
                 ></v-select>
               </v-col>
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <v-textarea
                   v-model="editedItem.description"
                   label="Description"
@@ -111,10 +111,10 @@
                   label="Required Credits"
                   type="number"
                 ></v-text-field>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-container>
-          <small class="text-red">* indicates required field</small>
+          <!-- <small class="text-red">* indicates required field</small> -->
         </v-card-text>
 
         <v-card-actions>
@@ -165,15 +165,15 @@
 
 <script>
 import { ref, reactive, computed, onMounted } from 'vue';
-import MajorService from '../services/majorServices.js';
-import DepartmentService from '../services/departmentServices.js';
+import MajorServices from '../services/MajorServices.js';
+// import DepartmentService from '../services/departmentServices.js';
 
 export default {
   name: 'MajorList',
   
   setup() {
     const majors = ref([]);
-    const departments = ref([]);
+    const departments = ref(['cs','eng','bible']);
     const loading = ref(true);
     const dialog = ref(false);
     const deleteDialog = ref(false);
@@ -188,24 +188,24 @@ export default {
     const departmentError = ref('');
 
     const headers = [
-      { title: 'ID', align: 'start', key: 'id' },
+      // { title: 'ID', align: 'start', key: 'id' },
       { title: 'Name', align: 'start', key: 'name' },
-      { title: 'Code', align: 'start', key: 'code' },
+      // { title: 'Code', align: 'start', key: 'code' },
       { title: 'Department', align: 'start', key: 'department' },
-      { title: 'Required Credits', align: 'start', key: 'requiredCredits' },
-      { title: 'Status', align: 'start', key: 'isActive', 
-        renderCell: value => value ? 'Active' : 'Inactive' },
+      // { title: 'Required Credits', align: 'start', key: 'requiredCredits' },
+      // { title: 'Status', align: 'start', key: 'isActive', 
+        // renderCell: value => value ? 'Active' : 'Inactive' },
       { title: 'Actions', key: 'actions', sortable: false }
     ];
 
     const defaultItem = {
-      id: null,
+      // id: null,
       name: '',
-      code: '',
-      departmentId: null,
-      description: '',
-      requiredCredits: 120,
-      isActive: true
+      // code: '',
+      department: '',
+      // description: '',
+      // requiredCredits: 120,
+      // isActive: true
     };
 
     const editedItem = reactive({ ...defaultItem });
@@ -219,7 +219,7 @@ export default {
     const fetchMajors = async () => {
       loading.value = true;
       try {
-        const response = await MajorService.getAll();
+        const response = await MajorServices.fetchAll();
         majors.value = response.data;
       } catch (error) {
         console.error('Error fetching majors:', error);
@@ -281,12 +281,12 @@ export default {
         isValid = false;
       }
       
-      if (!editedItem.code || editedItem.code.trim() === '') {
-        codeError.value = 'Major code is required';
-        isValid = false;
-      }
+      // if (!editedItem.code || editedItem.code.trim() === '') {
+      //   codeError.value = 'Major code is required';
+      //   isValid = false;
+      // }
       
-      if (!editedItem.departmentId) {
+      if (!editedItem.department) {
         departmentError.value = 'Department is required';
         isValid = false;
       }
@@ -298,7 +298,7 @@ export default {
     const resetValidation = () => {
       nameError.value = '';
       codeError.value = '';
-      departmentError.value = '';
+      // departmentError.value = '';
     };
 
     // Save major (create or update)
@@ -310,12 +310,12 @@ export default {
       try {
         if (editedIndex.value > -1) {
           // Update existing major
-          await MajorService.update(editedItem.id, editedItem);
+          await MajorServices.update(editedItem.id, editedItem);
           Object.assign(majors.value[editedIndex.value], editedItem);
           showSnackbar('Major updated successfully');
         } else {
           // Create new major
-          const response = await MajorService.create(editedItem);
+          const response = await MajorServices.create(editedItem);
           majors.value.push(response.data);
           showSnackbar('Major created successfully');
         }
@@ -345,7 +345,7 @@ export default {
     // Delete major
     const deleteItemConfirm = async () => {
       try {
-        await MajorService.delete(editedItem.id);
+        await MajorServices.delete(editedItem.id);
         majors.value.splice(editedIndex.value, 1);
         showSnackbar('Major deleted successfully');
       } catch (error) {
@@ -362,9 +362,9 @@ export default {
       snackbar.value = true;
     };
 
-    onMounted(() => {
-      fetchDepartments();
-      fetchMajors();
+    onMounted(async () => {
+      // await fetchDepartments();
+      await fetchMajors();
     });
 
     return {

@@ -1,57 +1,29 @@
-// mrj
-// need to ask matthew about the auth
-//
 // src/services/BadgeService.js
-import axios from 'axios';
+import apiClient from "./services.js";
 
-// Adjust base URL to match your API endpoint
-const API_URL = 'http://localhost:3100/flight-plan-t4';
+export default {
+  fetchAll() {
+    console.log("services - fetching all badges");
+    return apiClient.get(`/badges`);
+  },
 
-class BadgeService {
-  /**
-   * Get all badges
-   * @returns {Promise} - Promise with badges data
-   */
-  getAll() {
-    return axios.get(`${API_URL}/badges`);
-  }
+  fetchOne(badgeId) {
+    console.log(`services - fetching badge ${badgeId}`);
+    return apiClient.get(`/badges/${badgeId}`);
+  },
 
-  /**
-   * Get a single badge by ID
-   * @param {Number} id - Badge ID
-   * @returns {Promise} - Promise with badge data
-   */
-  get(id) {
-    return axios.get(`${API_URL}/badges/${id}`);
-  }
-
-  /**
-   * Create a new badge
-   * @param {Object} data - Badge data
-   * @returns {Promise} - Promise with created badge
-   */
   create(data) {
-    return axios.post(`${API_URL}/badges`, data);
-  }
+    console.log("services - creating badge", data);
+    return apiClient.post(`/badges`, data);
+  },
 
-  /**
-   * Update an existing badge
-   * @param {Number} id - Badge ID
-   * @param {Object} data - Updated badge data
-   * @returns {Promise} - Promise with updated badge
-   */
-  update(id, data) {
-    return axios.put(`${API_URL}/badges/${id}`, data);
-  }
+  update(badgeId, data) {
+    console.log(`services - updating badge ${badgeId}`, data);
+    return apiClient.put(`/badges/${badgeId}`, data);
+  },
 
-  /**
-   * Delete a badge
-   * @param {Number} id - Badge ID
-   * @returns {Promise} - Promise with delete status
-   */
-  delete(id) {
-    return axios.delete(`${API_URL}/badges/${id}`);
-  }
-}
-
-export default new BadgeService();
+  delete(badgeId) {
+    console.log(`services - deleting badge ${badgeId}`);
+    return apiClient.delete(`/badges/${badgeId}`);
+  },
+};
