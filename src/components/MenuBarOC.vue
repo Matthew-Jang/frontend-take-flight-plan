@@ -50,7 +50,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <v-app-bar app>
+    <v-app-bar app prominent height="120">
       <router-link :to="{ name: 'home' }">
         <v-img
           class="mx-2"
@@ -68,14 +68,15 @@ onMounted(() => {
         <!-- <v-btn class="mx-2" :to="{ name: 'tutorials' }"> List </v-btn>
         <v-btn class="mx-2" :to="{ name: 'add' }"> Add Tutorial </v-btn> -->
         <v-btn class="mx-2" :to="{ name: 'home' }"> home </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_users' }"> users </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_users' }"> admin_users </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_events' }"> admin_events </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_badges' }"> badges </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_majors' }"> majors </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_badges' }"> admin_badges </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_majors' }"> admin_majors </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_redeem' }"> redeem </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'events' }"> events </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_checklist_items' }"> check </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }"> flight </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_events_view' }"> admin_events view </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_checklist_items' }"> admin_check </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }"> admin_flight </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'events_calendar' }"> events_calendar </v-btn>
       </div>
       <v-menu bottom min-width="200px" rounded offset-y v-if="user">
         <template v-slot:activator="{ props }">

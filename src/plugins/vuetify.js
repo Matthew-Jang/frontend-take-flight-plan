@@ -2,6 +2,10 @@
  * Vuetify3 Plugin
  */
 import { createVuetify } from "vuetify";
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+// import the labs calendar
+import { VCalendar } from 'vuetify/labs/VCalendar'
 
 // Misc
 import { loadFonts } from "./webfontloader";
@@ -36,6 +40,11 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: "mdi",
   },
+  components: {
+    ...components,
+    VCalendar,
+  },
+  directives,
 });
 
 export default vuetify;

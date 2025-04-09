@@ -17,6 +17,10 @@ export default () => {
       port: 8081,
     },
 
+    define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+    },
+
     base: baseURL,
   });
 };
