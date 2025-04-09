@@ -11,7 +11,8 @@ import AdminMajors from './views/Admin_Majors.vue';
 import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
 
-import Events from './views/Events.vue';
+import EventsView from './views/Events.vue';
+import EventsCalendar from "./views/Event_Calendar.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,11 +62,6 @@ const router = createRouter({
       component: AdminRedeem,
     },
     {
-      path: '/events',
-      name: 'events',
-      component: Events,
-    },
-    {
       path: '/admin/checklist_items',
       name: 'admin_checklist_items',
       component: AdminChecklistItems,
@@ -74,7 +70,18 @@ const router = createRouter({
       path: '/admin/flight_plan',
       name: 'admin_flight_plan', 
       component: AdminFlightPlan,
-    }
+    },
+    {
+      path: '/admin/events/view',
+      name: 'admin_events_view',
+      component: EventsView,
+    },
+    {
+      path: '/calendar',
+      name: 'events_calendar', 
+      component: EventsCalendar,
+    },
+
   ],
 });
 

@@ -2,6 +2,7 @@ import apiClient from "./apiClient"; // Default import
 
 export default {
   getAllEvents() {
+    console.log("in get all events services")
     return apiClient.get("/events");
   },
   getEventById(eventId) {
