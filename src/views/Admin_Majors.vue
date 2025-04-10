@@ -31,8 +31,11 @@
         :loading="loading"
         class="elevation-1"
       >
-        <template v-slot:item.department="{ item }">
+        <!-- <template v-slot:item.department="{ item }">
           {{ getDepartmentName(item.departmentId) }}
+        </template> -->
+        <template v-slot:item.department="{ item }">
+          {{ item.department }}
         </template>
         
         <template v-slot:item.actions="{ item }">

@@ -17,11 +17,11 @@ import EventsCalendar from "./views/Event_Calendar.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'UserProfile',
-    //   component: UserProfile
-    // },
+    {
+      path: '/student/profile',
+      name: 'student_profile',
+      component: UserProfile
+    },
     {
       path: '/',
       alias: '/login',

@@ -180,7 +180,7 @@
         { title: 'Title', align: 'start', key: 'title' },
         { title: 'Description', align: 'start', key: 'description' },
         { title: 'Points', align: 'start', key: 'points' },
-        { title: 'XP', align: 'start', key: 'exp' },
+        // { title: 'XP', align: 'start', key: 'exp' },
         { title: 'Actions', key: 'actions', sortable: false }
       ];
   

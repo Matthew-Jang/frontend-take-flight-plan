@@ -3,6 +3,10 @@ import { ref, onMounted } from 'vue'
 import Utils from "../config/utils.js";
 import UserServices from '../services/userServices.js'
 import StudentServices from '../services/studentServices.js'
+
+const user = ref(null);
+const student = ref(null);
+
 const users = ref([])
 const students = ref([])
 const student_headers = [
@@ -95,6 +99,7 @@ onMounted(() => {
       <v-card-text>
         <v-data-table :headers="headers" :items="users" class="elevation-1">
           <template v-slot:item.actions="{ item }">
+            <v-icon @click="studentView()">mdi-eye</v-icon>
             <v-icon @click="editUser(item)">mdi-pencil</v-icon>
             <v-icon @click="deleteUser(item.id)" color="red">mdi-delete</v-icon>
           </template>
@@ -121,7 +126,7 @@ onMounted(() => {
     <!-- End Modal -->
 
     <!-- student stuff -->
-    <v-card>
+    <!-- <v-card>
       <v-card-title>
         Students
       </v-card-title>
@@ -133,7 +138,7 @@ onMounted(() => {
           </template>
         </v-data-table>
       </v-card-text>
-    </v-card>
+    </v-card> -->
 
     <!-- Modal -->
     <v-dialog v-model="showModal" max-width="400">
