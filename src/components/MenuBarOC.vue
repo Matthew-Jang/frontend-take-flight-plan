@@ -68,6 +68,7 @@ onMounted(() => {
         <!-- <v-btn class="mx-2" :to="{ name: 'tutorials' }"> List </v-btn>
         <v-btn class="mx-2" :to="{ name: 'add' }"> Add Tutorial </v-btn> -->
         <v-btn class="mx-2" :to="{ name: 'home' }"> home </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'student_flight_plan' }"> student_flight_plan </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_users' }"> admin_users </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_events' }"> admin_events </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_badges' }"> admin_badges </v-btn>

@@ -22,4 +22,14 @@ export default {
     return apiClient.delete(`/students/${student_id}`);
   },
 
+  // findByUser(user_id) {
+  //   console.log("services - finding user student " + user_id);
+  //   return apiClient.get(`/students/user/${user_id}`);
+  findByUser(userId) {
+    console.log("services - finding student by user: " + userId);
+    return apiClient.get(`/students/user`, {
+      params: { user_id: userId}
+    });
+  },
+
 };

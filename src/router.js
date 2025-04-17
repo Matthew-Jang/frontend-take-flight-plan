@@ -10,6 +10,7 @@ import AdminBadges from './views/Admin_Badges.vue';
 import AdminMajors from './views/Admin_Majors.vue';
 import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
+import StudentFlightPlan from './views/Student_Flight_Plan.vue';
 
 import EventsView from './views/Events.vue';
 import EventsCalendar from "./views/Event_Calendar.vue";
@@ -80,6 +81,11 @@ const router = createRouter({
       path: '/calendar',
       name: 'events_calendar', 
       component: EventsCalendar,
+    },
+    {
+      path: '/student/flight_plan',
+      name: 'student_flight_plan', 
+      component: StudentFlightPlan,
     },
 
   ],
