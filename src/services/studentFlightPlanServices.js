@@ -37,10 +37,10 @@ export default {
     if (file) {
       form.append("file", file);
     }
+    // ← let axios set Content-Type and boundary automatically:
     return apiClient.put(
       `/student_flight_plan_items/${itemId}/complete`,
-      form,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      form
     );
   },
 
@@ -68,6 +68,13 @@ export default {
     return apiClient.put(
       `/student_flight_plan_items/${itemId}`,
       { admin_approval: approval }
+    );
+  },
+
+  updateState(itemId, newState) {
+    return apiClient.put(
+      `/student_flight_plan_items/${itemId}`,
+      { state: newState }
     );
   }
 };
