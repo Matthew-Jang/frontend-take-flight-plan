@@ -22,6 +22,10 @@ export default {
     return apiClient.delete(`/users/${userId}`);
   },
 
+  getCurrentUser() {
+    return apiClient.get("/users/me");
+  },
+  
   modifyPoints(userId, payload) {
     console.log(`services - modifying points for user ${userId}`, payload);
     return apiClient.patch(`/users/${userId}/points`, payload);
