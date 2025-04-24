@@ -82,6 +82,7 @@ const routes = [
   {
     path: '/admin/approval',
     name: 'admin_approval', 
+    meta: { requiresAdmin: true },
     component: AdminApproval,
 
   },
@@ -89,7 +90,6 @@ const routes = [
     path: '/student/badges',
     name: 'student_badges', 
     component: StudentBadges,
-
   },
 
   // shared “view-only” under /admin for everyone

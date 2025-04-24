@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app prominent height="80" color="primary" dark elevation="4">
+  <v-app-bar app prominent height="120" color="primary" dark elevation="4">
     <!-- Logo + Title -->
     <router-link :to="{ name: 'home' }">
       <v-img class="mx-2" :src="logoURL" height="50" width="50" contain />
@@ -17,6 +17,7 @@
       </v-btn>
       <v-btn class="mx-2" :to="{ name: 'admin_events_view' }">Events</v-btn>
       <v-btn class="mx-2" :to="{ name: 'events_calendar' }">Calendar</v-btn>
+      <v-btn class="mx-2" :to="{ name: 'student_badges' }">Earned</v-btn>
 
       <!-- Admin-only links -->
       <template v-if="isAdmin">
@@ -31,7 +32,6 @@
         <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }">
           Flight Plans
         </v-btn>
-        <v-btn class="mx-2" :to="{ name: 'student_badges' }">Earned</v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_approval' }">Approve</v-btn>
       </template>
     </div>
