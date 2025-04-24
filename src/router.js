@@ -11,6 +11,8 @@ import AdminMajors from './views/Admin_Majors.vue';
 import AdminChecklistItems from './views/Admin_Checklist_Items.vue';
 import AdminFlightPlan from './views/Admin_Flight_Plan.vue';
 import StudentFlightPlan from './views/Student_Flight_Plan.vue';
+import AdminApproval from './views/Admin_Approval.vue';
+import StudentBadges from "./views/Student_Badges.vue";
 
 import EventsView from './views/Events.vue';
 import EventsCalendar from "./views/Event_Calendar.vue";
@@ -86,6 +88,16 @@ const router = createRouter({
       path: '/student/flight_plan',
       name: 'student_flight_plan', 
       component: StudentFlightPlan,
+    },
+    {
+      path: '/admin/approval',
+      name: 'admin_approval', 
+      component: AdminApproval,
+    },
+    {
+      path: '/student/badges',
+      name: 'student_badges', 
+      component: StudentBadges,
     },
 
   ],

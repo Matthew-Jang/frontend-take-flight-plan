@@ -114,7 +114,7 @@
             color="primary"
             rounded
             elevation="2"
-            @click="confirmComplete"
+            @click="pendingApproval"
           >
             Submit
           </v-btn>
@@ -208,11 +208,11 @@ function openDialog(item) {
   uploadFile.value  = null
   dialog.value      = true
 }
-async function confirmComplete() {
+async function pendingApproval() {
   dialog.value = false
-  await FlightPlanServices.complete(
+  await FlightPlanServices.updateState(
     selectedItem.value.id,
-    uploadFile.value
+    'Pending',
   )
   await fetchItems()
 }

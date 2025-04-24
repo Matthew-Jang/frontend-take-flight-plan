@@ -51,7 +51,7 @@ export default {
   fetchPending() {
     return apiClient.get("/student_flight_plan_items", {
       params: {
-        state: "Completed",
+        state: "Pending",
         pendingApproval: true,
         includeStudent: true,
         includeChecklist: true
