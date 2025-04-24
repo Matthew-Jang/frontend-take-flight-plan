@@ -8,6 +8,7 @@ import Home                from "./views/Home.vue";
 import EventsView          from "./views/Events.vue";
 import EventsCalendar      from "./views/Event_Calendar.vue";
 import StudentFlightPlan   from "./views/Student_Flight_Plan.vue";
+import UserProfile         from "./views/UserProfile.vue";
 
 // admin-only views
 import AdminUsers          from "./views/Admin_Users.vue";
@@ -30,6 +31,13 @@ const routes = [
     path: "/student/flight_plan",
     name: "student_flight_plan",
     component: StudentFlightPlan
+  },
+
+  {
+    path: "/profile",
+    name: "profile",
+    component: UserProfile,
+    meta: { requiresAuth: true }
   },
 
   // admin-only (guarded below)
