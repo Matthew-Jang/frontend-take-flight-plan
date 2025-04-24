@@ -60,7 +60,7 @@
   
   async function approve(id) {
     // await FlightPlanServices.review(id, 1)
-    await FlightPlanServices.updateState(id, 'Completed')
+    await FlightPlanServices.complete(id)
     await loadPending()
   }
   

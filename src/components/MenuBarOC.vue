@@ -79,6 +79,7 @@ onMounted(() => {
         <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }"> admin_flight </v-btn>
         <v-btn class="mx-2" :to="{ name: 'events_calendar' }"> events_calendar </v-btn>
         <v-btn class="mx-2" :to="{ name: 'admin_approval' }"> admin_approval </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'student_badges' }"> student_badges </v-btn>
       </div>
       <v-menu bottom min-width="200px" rounded offset-y v-if="user">
         <template v-slot:activator="{ props }">
