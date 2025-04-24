@@ -19,6 +19,9 @@ import AdminRedeem         from "./views/Admin_Redeem.vue";
 import AdminChecklistItems from "./views/Admin_Checklist_Items.vue";
 import AdminFlightPlan     from "./views/Admin_Flight_Plan.vue";
 
+import AdminApproval from './views/Admin_Approval.vue';
+import StudentBadges from "./views/Student_Badges.vue";
+
 const routes = [
   // auth & home
   { path: "/",            alias: "/login",   name: "login",  component: Login },
@@ -75,6 +78,18 @@ const routes = [
     name: "admin_flight_plan",
     component: AdminFlightPlan,
     meta: { requiresAdmin: true },
+  },
+  {
+    path: '/admin/approval',
+    name: 'admin_approval', 
+    component: AdminApproval,
+
+  },
+  {
+    path: '/student/badges',
+    name: 'student_badges', 
+    component: StudentBadges,
+
   },
 
   // shared “view-only” under /admin for everyone

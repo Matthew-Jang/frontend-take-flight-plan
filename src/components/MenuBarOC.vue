@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app prominent height="120">
+  <v-app-bar app prominent height="80" color="primary" dark elevation="4">
     <!-- Logo + Title -->
     <router-link :to="{ name: 'home' }">
       <v-img class="mx-2" :src="logoURL" height="50" width="50" contain />
@@ -31,6 +31,8 @@
         <v-btn class="mx-2" :to="{ name: 'admin_flight_plan' }">
           Flight Plans
         </v-btn>
+        <v-btn class="mx-2" :to="{ name: 'student_badges' }">Earned</v-btn>
+        <v-btn class="mx-2" :to="{ name: 'admin_approval' }">Approve</v-btn>
       </template>
     </div>
 
@@ -89,14 +91,14 @@ const roleText = computed(() => {
     case 2: return "Staff";
     default: return "Unknown";
 
-const resetMenu = () => {
-  user.value = null;
-  user.value = Utils.getStore("user");
-  if (user.value) {
-    // initials.value = user.value.fName[0] + user.value.lName[0];
-    name.value = user.value.fName + " " + user.value.lName;
+// const resetMenu = () => {
+//   user.value = null;
+//   user.value = Utils.getStore("user");
+//   if (user.value) {
+//     // initials.value = user.value.fName[0] + user.value.lName[0];
+//     name.value = user.value.fName + " " + user.value.lName;
 
-  }
+ }
 });
 
 // calculate available points (awarded - used)
