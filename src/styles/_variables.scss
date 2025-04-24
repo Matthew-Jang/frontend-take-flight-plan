@@ -1,0 +1,53 @@
+// ────────────────────────────────────────────────────────────────────────────
+// 1. SPACING
+// ────────────────────────────────────────────────────────────────────────────
+$spacing-unit: 8px !default;            // base unit
+$gutter-sm: $spacing-unit * 2;          // 16px
+$gutter-md: $spacing-unit * 3;          // 24px
+$gutter-lg: $spacing-unit * 4;          // 32px
+
+// ────────────────────────────────────────────────────────────────────────────
+// 2. COLORS
+// ────────────────────────────────────────────────────────────────────────────
+$color-oc-maroon:       #811429 !default;
+$color-oc-dark-maroon:  #48111c !default;
+$color-oc-silver:       #d5dfe7 !default;
+$color-oc-cream:        #f4ecd0 !default;
+$color-white:           #ffffff !default;
+$color-black:           #000000 !default;
+
+$color-oc-marigold:     #f9c634 !default;
+$color-oc-salmon:       #f68d76 !default;
+$color-oc-sky:          #bde3dc !default;
+$color-oc-storm:        #708e9a !default;
+$color-oc-ethos:        #5ec4b6 !default;
+
+// ────────────────────────────────────────────────────────────────────────────
+// 3. TYPOGRAPHY
+// ────────────────────────────────────────────────────────────────────────────
+$font-primary:  'Poppins', sans-serif !default;
+$font-display:  'Bebas Neue', cursive   !default;
+
+$font-size-h1:      2rem    !default;   // 32px
+$font-size-h2:      1.75rem !default;   // 28px
+$font-size-h3:      1.5rem  !default;   // 24px
+$font-size-body:    1rem    !default;   // 16px
+$font-size-button:  0.875rem!default;   // 14px
+$font-size-caption: 0.75rem !default;   // 12px
+
+$line-height-base: 1.5 !default;
+
+// ────────────────────────────────────────────────────────────────────────────
+// 4. RADII & SHADOWS
+// ────────────────────────────────────────────────────────────────────────────
+$radius-base:   8px   !default;
+$radius-lg:     16px  !default;
+
+$shadow-base:   0 2px 4px rgba(0,0,0,0.1)  !default;
+$shadow-hover:  0 4px 12px rgba(0,0,0,0.15) !default;
+
+// ────────────────────────────────────────────────────────────────────────────
+// 5. BREAKPOINTS
+// (we’ll stick with Vuetify’s defaults unless you want custom ones)
+// ────────────────────────────────────────────────────────────────────────────
+// vuetify defaults: xs <600, sm 600–960, md 960–1264, lg 1264–1904, xl >1904

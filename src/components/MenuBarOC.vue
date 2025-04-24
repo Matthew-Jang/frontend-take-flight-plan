@@ -88,6 +88,14 @@ const roleText = computed(() => {
     case 1: return "Admin";
     case 2: return "Staff";
     default: return "Unknown";
+
+const resetMenu = () => {
+  user.value = null;
+  user.value = Utils.getStore("user");
+  if (user.value) {
+    // initials.value = user.value.fName[0] + user.value.lName[0];
+    name.value = user.value.fName + " " + user.value.lName;
+
   }
 });
 

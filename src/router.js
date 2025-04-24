@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import UserServices from "./services/userServices";
 
+
 // public views
 import Login               from "./views/Login.vue";
 import Home                from "./views/Home.vue";
@@ -92,6 +93,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+
   routes,
 });
 

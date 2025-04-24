@@ -142,7 +142,7 @@ onMounted(async () => {
       <v-card-title>
         Flight Plan
         <v-spacer />
-        <v-btn color="green" @click="saveFlightPlan">Save</v-btn>
+        <!-- <v-btn color="green" @click="saveFlightPlan">Save</v-btn> -->
       </v-card-title>
       <v-card-text>
         <v-row>

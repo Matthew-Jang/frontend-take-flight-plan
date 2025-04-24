@@ -1,35 +1,29 @@
-// StudentFlightPlan.vue
+<!-- Page 1 of 12 — StudentFlightPlan.vue -->
 <template>
   <v-container>
     <v-row class="mb-4" align="center" justify="space-between">
       <!-- Generate button -->
-      <v-btn
-        :disabled="!student"
-        color="primary"
-        @click="generatePlan"
-      >
-        Generate Flight Plan
-      </v-btn>
+      <BrandedButton @click.once="generatePlan">Generate Flight Plan</BrandedButton>
 
       <!-- View mode toggle -->
-      <v-btn-toggle v-model="viewMode" class="ml-4">
+      <v-btn-toggle v-model="viewMode" class="ml-4" color="oc-salmon">
         <v-btn value="all">All</v-btn>
         <v-btn value="four">4-at-a-time</v-btn>
         <v-btn value="single">Single</v-btn>
       </v-btn-toggle>
-
-      <!-- Semester selector in single‑mode -->
-      <v-select
+    </v-row>
+    
+    <!-- Semester selector in single-mode -->
+    <v-select
         v-if="viewMode === 'single'"
         v-model="selectedSemester"
-        :items="semesterTitles.map((t,i) => ({ text: t, value: i }))"
-        item-text="text"
+        :items="semesterTitles.map((t, i) => ({ title: t, value: i }))"
+        item-title="title"
         item-value="value"
         label="Semester"
         dense
         class="ml-4"
       />
-    </v-row>
 
     <!-- ALL Semesters -->
     <div v-if="viewMode === 'all'">
@@ -47,16 +41,24 @@
       </v-row>
     </div>
 
-    <!-- FOUR‑at‑a‑time -->
+    <!-- FOUR-at-a-time -->
     <div v-if="viewMode === 'four'">
       <v-row align="center" justify="space-between" class="mb-2">
-        <v-btn @click="page = Math.max(0, page-1)" :disabled="page===0">
+        <BrandedButton
+          variant="outlined"
+          :disabled="page === 0"
+          @click="page = Math.max(0, page - 1)"
+        >
           Prev
-        </v-btn>
-        <span>Page {{ page+1 }} / {{ totalPages }}</span>
-        <v-btn @click="page = Math.min(totalPages-1, page+1)" :disabled="page===totalPages-1">
+        </BrandedButton>
+        <span>Page {{ page + 1 }} / {{ totalPages }}</span>
+        <BrandedButton
+          variant="outlined"
+          :disabled="page === totalPages - 1"
+          @click="page = Math.min(totalPages - 1, page + 1)"
+        >
           Next
-        </v-btn>
+        </BrandedButton>
       </v-row>
       <v-slide-group show-arrows>
         <v-slide-item
@@ -82,8 +84,8 @@
 
     <!-- Dialog for file submission -->
     <v-dialog v-model="dialog" max-width="500">
-      <v-card>
-        <v-card-title>Submit Your Work</v-card-title>
+      <BrandedCard>
+        <v-card-title class="bg-oc-sky">Submit Your Work</v-card-title>
         <v-card-text>
           <p>
             You’re about to mark
@@ -91,35 +93,18 @@
             as “Pending Approval.”<br/>
             Please upload your supporting file below:
           </p>
-          <!-- <v-file-input
-            v-model="uploadFile"
-            label="Choose file"
-            accept="*/*"
-            outlined
-            dense
-            required
-          /> -->
+          <!-- <v-file-input ... /> -->
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn text @click="dialog = false">Cancel</v-btn>
-          <!-- <v-btn
-            :disabled="!uploadFile"
-            color="primary"
-            rounded
-            elevation="2"
-            @click="confirmComplete"
-          > -->
-          <v-btn
-            color="primary"
-            rounded
-            elevation="2"
-            @click="confirmComplete"
-          >
+          <BrandedButton variant="text" @click="dialog = false">
+            Cancel
+          </BrandedButton>
+          <BrandedButton color="primary" @click="pendingApproval">
             Submit
-          </v-btn>
+          </BrandedButton>
         </v-card-actions>
-      </v-card>
+      </BrandedCard>
     </v-dialog>
   </v-container>
 </template>
@@ -132,8 +117,9 @@ import StudentServices from '../services/studentServices.js'
 import FlightPlanServices from '../services/studentFlightPlanServices.js'
 import SemesterCard from '../components/SemesterCard.vue'
 
-//testing
-const fileRequired = ref(false)
+// **Branded components**
+import BrandedButton from '../components/BrandedButton.vue'
+import BrandedCard   from '../components/BrandedCard.vue'
 
 // state & UI
 const router = useRouter()
@@ -142,14 +128,14 @@ const student = ref(null)
 const semesters = ref([])
 const flightPlanItems = ref([])
 const semesterTitles = [
-  'Semester 1','Semester 2','Semester 3','Semester 4',
-  'Semester 5','Semester 6','Semester 7','Semester 8',
+  'Semester 1','Semester 2','Semester 3','Semester 4',
+  'Semester 5','Semester 6','Semester 7','Semester 8',
 ]
 
 // view modes
-const viewMode = ref('all')        // 'all' | 'four' | 'single'
-const selectedSemester = ref(0)    // index 0–7
-const page = ref(0)                // for 'four' mode
+const viewMode = ref('all')
+const selectedSemester = ref(0)
+const page = ref(0)
 const itemsPerPage = 4
 
 const totalPages = computed(() =>
@@ -205,14 +191,14 @@ async function generatePlan() {
 function openDialog(item) {
   if (item.state !== 'Not Started') return
   selectedItem.value = item
-  uploadFile.value  = null
-  dialog.value      = true
+  uploadFile.value = null
+  dialog.value = true
 }
-async function confirmComplete() {
+async function pendingApproval() {
   dialog.value = false
-  await FlightPlanServices.complete(
+  await FlightPlanServices.updateState(
     selectedItem.value.id,
-    uploadFile.value
+    'Pending',
   )
   await fetchItems()
 }
@@ -225,5 +211,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* add any page‑specific styles here */
+/* No additional page-specific styles needed—
+   everything comes from your design tokens & branded components */
 </style>

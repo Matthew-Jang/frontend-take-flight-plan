@@ -1,26 +1,28 @@
-// SemesterCard.vue
 <template>
-  <v-card outlined class="mb-4 pa-4" style="min-width: 300px;">
-    <v-card-title>{{ sem.title }}</v-card-title>
-    <v-divider />
+  <v-card outlined class="semester-card mb-4 pa-4 d-flex flex-column align-center">
+    <v-card-title class="text-center w-100">
+      {{ sem.title }}
+    </v-card-title>
+    <v-divider class="w-100" />
 
-    <v-card-text>
+    <v-card-text class="text-center w-100">
       <v-row>
         <v-col
           v-for="item in sem.flight_plan_items"
           :key="item.id"
           cols="12"
           sm="6"
+          class="d-flex justify-center"
         >
-          <v-card class="pa-3">
+          <v-card class="item-card pa-3 d-flex flex-column align-center">
             <!-- Description -->
-            <div class="item-desc">
+            <div class="item-desc text-center">
               <strong>{{ item.name }}</strong><br />
               {{ item.points }} pts
             </div>
 
             <!-- Status on its own line -->
-            <div class="item-status mt-2">
+            <div class="item-status d-flex justify-center">
               <v-chip
                 :color="chipColor(item.state)"
                 small
@@ -30,17 +32,15 @@
               </v-chip>
             </div>
 
-            <!-- Complete button -->
-            <v-card-actions class="justify-end">
-              <v-btn
+            <!-- Complete button, centered -->
+            <v-card-actions class="d-flex justify-center w-100">
+              <BrandedButton
                 v-if="item.state === 'Not Started'"
                 color="primary"
-                rounded
-                elevation="2"
                 @click="$emit('complete', item)"
               >
                 Complete
-              </v-btn>
+              </BrandedButton>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -59,6 +59,7 @@
 
 <script setup>
 import { defineProps } from 'vue'
+import BrandedButton from '@/components/BrandedButton.vue'
 
 const props = defineProps({
   sem: { type: Object, required: true }
@@ -67,14 +68,25 @@ const props = defineProps({
 function chipColor(state) {
   switch (state) {
     case 'Not Started': return 'grey lighten-1'
-    case 'Pending':     return 'blue lighten-3'
-    case 'Completed':   return 'green lighten-3'
+    case 'Pending':     return 'oc-salmon'
+    case 'Completed':   return 'oc-ethos'
     default:            return 'grey'
   }
 }
 </script>
 
-<style scoped>
-.item-desc { width: 100%; }
-.item-status { }
+<style lang="scss" scoped>
+@use "@/styles/_variables.scss" as *;
+
+.semester-card {
+  min-width: 300px;
+}
+
+.item-card {
+  width: 100%;
+}
+
+.item-status {
+  margin-top: $gutter-sm;
+}
 </style>

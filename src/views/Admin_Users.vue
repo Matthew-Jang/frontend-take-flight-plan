@@ -95,8 +95,12 @@ onMounted(() => {
       <v-card-text>
         <v-data-table :headers="headers" :items="users" class="elevation-1">
           <template v-slot:item.actions="{ item }">
-            <v-icon @click="editUser(item)">mdi-pencil</v-icon>
-            <v-icon @click="deleteUser(item.id)" color="red">mdi-delete</v-icon>
+            <v-btn icon @click="openDialog(item)">
+            <v-icon color="oc-storm">mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon @click="confirmDelete(item)">
+            <v-icon color="oc-salmon">mdi-delete</v-icon>
+          </v-btn>
           </template>
         </v-data-table>
       </v-card-text>
