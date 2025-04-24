@@ -1,188 +1,197 @@
+<template>
+  <v-container>
+    <!-- Checklist Items Table -->
+    <BrandedCard class="mb-6">
+      <v-data-table
+        :headers="headers"
+        :items="checklistItems"
+        :search="search"
+        class="elevation-1"
+      >
+        <!-- Top slot: Title + Search + Add Button -->
+        <template #top>
+          <div class="d-flex justify-space-between align-center w-100 pa-4">
+            <span class="text-h6">Checklist Items</span>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+              density="compact"
+              class="mx-4"
+              style="max-width: 300px"
+            />
+            <BrandedButton color="primary" @click="openItemModal(true)">
+              <v-icon left small>mdi-plus</v-icon>
+              Add Item
+            </BrandedButton>
+          </div>
+        </template>
+
+        <!-- Actions Column -->
+        <template #item.actions="{ item }">
+          <v-btn icon @click.prevent.stop="openItemModal(false, item)">
+            <v-icon color="oc-storm">mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon @click.prevent.stop="confirmDelete(item)">
+            <v-icon color="oc-salmon">mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </BrandedCard>
+
+    <!-- Add/Edit Item Dialog -->
+    <v-dialog v-model="showItemModal" max-width="500px">
+      <BrandedCard>
+        <v-card-title class="text-h5">
+          {{ isAdd ? 'Add Checklist Item' : 'Edit Checklist Item' }}
+        </v-card-title>
+        <v-card-text>
+          <v-form @submit.prevent>
+            <v-text-field
+              v-model="selectedItem.name"
+              label="Name*"
+              required
+              dense
+            />
+            <v-select
+              v-model="selectedItem.item_type"
+              :items="['task', 'experience']"
+              label="Item Type*"
+              required
+              dense
+            />
+            <v-textarea
+              v-model="selectedItem.description"
+              label="Description*"
+              required
+              dense
+            />
+            <v-text-field
+              v-model.number="selectedItem.points"
+              label="Points*"
+              type="number"
+              required
+              dense
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions class="d-flex justify-end w-100">
+          <BrandedButton variant="text" @click="closeItemModal">Cancel</BrandedButton>
+          <BrandedButton color="primary" @click="saveItem">
+            {{ isAdd ? 'Create' : 'Save' }}
+          </BrandedButton>
+        </v-card-actions>
+      </BrandedCard>
+    </v-dialog>
+
+    <!-- Delete Confirmation Dialog -->
+    <v-dialog v-model="showDeleteModal" max-width="400px">
+      <BrandedCard>
+        <v-card-title class="text-h5">Confirm Deletion</v-card-title>
+        <v-card-text>
+          Are you sure you want to delete "{{ selectedItem.name }}"? This action cannot be undone.
+        </v-card-text>
+        <v-card-actions class="d-flex justify-end w-100">
+          <BrandedButton variant="text" @click="showDeleteModal = false">Cancel</BrandedButton>
+          <BrandedButton color="oc-salmon" @click="deleteItemConfirm">Delete</BrandedButton>
+        </v-card-actions>
+      </BrandedCard>
+    </v-dialog>
+  </v-container>
+</template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
-import ChecklistItemServices from '../services/checklistItemServices.js'
+import ChecklistItemServices from '@/services/checklistItemServices.js'
 
+// Branded components
+import BrandedButton from '@/components/BrandedButton.vue'
+import BrandedCard   from '@/components/BrandedCard.vue'
+
+// State
+const search = ref('')
 const isAdd = ref(false)
 const checklistItems = ref([])
 const showItemModal = ref(false)
 const showDeleteModal = ref(false)
 const selectedItem = ref({})
-const newItem = ref({
-  item_type: "task",
-  name: "name",
-  description: "desc",
-  points: "10",
-  semesters_til_graduation: "1",
-})
 
-// Define table headers for checklist items
+// Default new item template
+const newItem = {
+  item_type: 'task',
+  name: '',
+  description: '',
+  points: 0,
+}
+
+// Table headers using title/value
 const headers = [
-  { title: 'Name', value: 'name' },
-  { title: 'Item Type', value: 'item_type' },
-  { title: 'Description', value: 'description' },
-  { title: 'Points', value: 'points' },
-  { title: 'Actions', value: 'actions', sortable: false },
+  { title: 'Name',             value: 'name' },
+  { title: 'Item Type',        value: 'item_type' },
+  { title: 'Description',      value: 'description' },
+  { title: 'Points',           value: 'points' },
+  { title: 'Actions',          value: 'actions', sortable: false },
 ]
 
-// Toggle modal display
-const toggleModal = () => {
-  showItemModal.value = !showItemModal.value;
-};
-
-// Open modal for editing a checklist item
-const editItem = (item) => {
-  selectedItem.value = { ...item } // shallow copy to avoid direct mutation
-  toggleModal();
-  console.log("Selected Item: " + selectedItem.value.name)
-};
-
-const add = () => {
-  isAdd.value = true;
-  toggleModal();
-  selectedItem.value = newItem.value;
+// Open add/edit modal
+function openItemModal(addMode, item = null) {
+  isAdd.value = addMode
+  selectedItem.value = addMode ? { ...newItem } : { ...item }
+  showItemModal.value = true
 }
 
-const addItem = () => {
-  console.log("Vue - creating checklist item with id: " + selectedItem.value.id);
-
-  const data = {
-    name: selectedItem.value.name,
-    item_type: selectedItem.value.item_type,
-    description: selectedItem.value.description,
-    points: selectedItem.value.points,
-    semester_number: selectedItem.value.semester_number,
-  };
-
-  ChecklistItemServices.create(data)
-    .then((response) => {
-      console.log("Vue - created checklist item", data)
-      fetchChecklistItems();
-    })
-    .catch((error) => {
-      console.error("Vue - error creating checklist item", error);
-    });
-  toggleModal();
+// Close add/edit modal
+function closeItemModal() {
+  showItemModal.value = false
 }
 
-const fetchChecklistItems = async () => {
-  console.log("Vue - fetching checklist items")
+// Save (create or update)
+async function saveItem() {
   try {
-    const response = await ChecklistItemServices.fetchAll()
-    // Map each item to include an isEditing flag if needed
-    checklistItems.value = response.data.map((item) => ({
-      ...item,
-      isEditing: false,
-    }));
-  } catch (error) {
-    console.error("Error fetching checklist items:", error);
+    if (isAdd.value) {
+      await ChecklistItemServices.create(selectedItem.value)
+    } else {
+      await ChecklistItemServices.update(selectedItem.value.id, selectedItem.value)
+    }
+    fetchChecklistItems()
+  } catch (err) {
+    console.error(err)
   }
-};
+  closeItemModal()
+}
 
-const saveItem = () => {
-  console.log("Vue - updating checklist item with id: " + selectedItem.value.id);
+// Delete
+function confirmDelete(item) {
+  selectedItem.value = { ...item }
+  showDeleteModal.value = true
+}
 
-  // Construct data based on the model
-  const data = {
-    name: selectedItem.value.name,
-    item_type: selectedItem.value.item_type,
-    description: selectedItem.value.description,
-    points: selectedItem.value.points,
-    semester_number: selectedItem.value.semester_number,
-  };
+async function deleteItemConfirm() {
+  try {
+    await ChecklistItemServices.delete(selectedItem.value.id)
+    fetchChecklistItems()
+  } catch (err) {
+    console.error(err)
+  }
+  showDeleteModal.value = false
+}
 
-  ChecklistItemServices.update(selectedItem.value.id, data)
-    .then((response) => {
-      console.log("Vue - updated checklist item", data)
-      fetchChecklistItems();
-    })
-    .catch((error) => {
-      console.error("Vue - error updating checklist item", error);
-    });
-  toggleModal();
-};
+// Fetch all checklist items
+async function fetchChecklistItems() {
+  try {
+    const res = await ChecklistItemServices.fetchAll()
+    checklistItems.value = res.data
+  } catch (err) {
+    console.error(err)
+  }
+}
 
-const deleteItem = (itemId) => {
-  console.log("Vue - deleting checklist item with id: " + itemId)
-
-  ChecklistItemServices.delete(itemId)
-    .then((response) => {
-      console.log("Vue - deleted checklist item", response.data)
-      fetchChecklistItems();
-    })
-    .catch((error) => {
-      console.error("Vue - error deleting checklist item", error);
-    });
-};
-
-onMounted(() => {
-  fetchChecklistItems()
-})
+onMounted(fetchChecklistItems)
 </script>
 
-<template>
-  <v-container>
-    <v-card>
-      <v-card-title>
-        Checklist Items
-      </v-card-title>
-      <v-card-text>
-
-        <v-btn color="green" class="mr-4" @click="add"> Add </v-btn>
-
-        <v-data-table :headers="headers" :items="checklistItems" class="elevation-1">
-          <template v-slot:item.actions="{ item }">
-            <v-icon @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon @click="deleteItem(item.id)" color="red">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-      </v-card-text>
-    </v-card>
-
-    <!-- Modal for editing checklist item -->
-    <v-dialog v-model="showItemModal" max-width="400">
-      <v-card>
-        <v-card-title v-if="isAdd" class="headline">Add Checklist Item</v-card-title>
-        <v-card-title v-else class="headline">Edit Checklist Item</v-card-title>
-        <v-form ref="form" @submit.prevent="">
-
-          <!-- Name -->
-          <v-text-field v-model="selectedItem.name" label="Name" required></v-text-field>
-
-          <!-- Type -->
-          <v-select v-model="selectedItem.item_type" :items="['task', 'experience']" label="Item Type" required></v-select>
-          
-          <v-textarea v-model="selectedItem.description" label="Description" required></v-textarea>
-
-          <v-text-field v-model="selectedItem.points" label="Points" type="number" required></v-text-field>
-
-          <v-text-field v-model="selectedItem.semester_number" label="Semester Number" type="number"
-            required></v-text-field>
-
-          <v-card-actions>
-            <v-btn v-if="isAdd" color="green" @click="addItem()">Save</v-btn>
-            <v-btn v-else color="green" @click="saveItem()">Save</v-btn>
-            <v-btn color="red" @click="toggleModal()">Cancel</v-btn>
-          </v-card-actions>
-
-        </v-form>
-      </v-card>
-    </v-dialog>
-    <!-- End Modal -->
-
-    <!-- Modal for Delete Button -->
-    <v-dialog v-model="showDeleteModal" max-width="400">
-      <v-card>
-        <v-card-title class="headline">Confirm Deletion</v-card-title>
-        <v-card-text>
-          Are you sure you want to delete this experience?
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="green" @click="showModal = false">Cancel</v-btn>
-          <v-btn color="red" @click="confirmDeleteExperience()">Delete</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <!-- End Modal -->
-
-  </v-container>
-</template>
+<style scoped lang="scss">
+@use '@/styles/_variables.scss' as *;
+/* All spacing & colors via tokens */
+</style>

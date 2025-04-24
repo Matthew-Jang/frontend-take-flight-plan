@@ -1,19 +1,33 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vuetify from "vite-plugin-vuetify";
+// vite.config.js
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 
-import dns from "dns";
-dns.setDefaultResultOrder("verbatim");
+import { fileURLToPath, URL } from 'node:url'
+import dns from 'dns'
+dns.setDefaultResultOrder('verbatim')
 
 export default () => {
   const baseURL =
-    process.env.APP_ENV === "development" ? "/" : "/2025/flight-plan/t4/";
+    process.env.APP_ENV === 'development'
+      ? '/'
+      : '/2025/flight-plan/t4/'
 
   return defineConfig({
-    plugins: [vue(), vuetify({ autoImport: true })],
+
+    resolve: {
+    alias: {
+    '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+    },
+
+    plugins: [
+      vue(),
+      vuetify({ autoImport: true })
+    ],
 
     server: {
-      host: "localhost",
+      host: 'localhost',
       port: 8081,
     },
 
@@ -22,5 +36,13 @@ export default () => {
     },
 
     base: baseURL,
-  });
-};
+
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "@/styles/_variables.scss" as *;`
+        }
+      }
+    }
+  })
+}

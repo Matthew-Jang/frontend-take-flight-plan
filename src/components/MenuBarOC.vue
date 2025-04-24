@@ -50,7 +50,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <v-app-bar app prominent height="120">
+    <v-app-bar app prominent height="120" color="primary" dark elevation="4">
       <router-link :to="{ name: 'home' }">
         <v-img
           class="mx-2"
