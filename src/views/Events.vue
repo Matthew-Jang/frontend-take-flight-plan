@@ -2,79 +2,105 @@
 import { ref, computed, onMounted } from 'vue';
 import EventServices from '../services/eventServices';
 
-// 1) All possible event type categories
+// All event categories
 const eventTypeOptions = ["Conference", "Meeting", "Lunch", "Other"];
 
-// 2) Reactive data
-const events = ref([]);
-const search = ref("");
-// By default, all types are selected
+const events        = ref([]);
+const search        = ref("");
 const selectedTypes = ref([...eventTypeOptions]);
-const filterDate = ref("");
+const filterDate    = ref("");
+const signedUp      = ref(new Set());
+const loading       = ref(false);
 
-// Helper function to normalize event_type to one of the 4 categories
-function normalizeEventType(rawType = "") {
-  const lower = rawType.toLowerCase();
-  if (lower.includes("conference")) return "Conference";
-  if (lower.includes("meeting")) return "Meeting";
-  if (lower.includes("lunch")) return "Lunch";
-  // Everything else is considered "Other"
+// Normalize to our four types
+function normalizeEventType(raw = "") {
+  const l = raw.toLowerCase();
+  if (l.includes("conference")) return "Conference";
+  if (l.includes("meeting"))    return "Meeting";
+  if (l.includes("lunch"))      return "Lunch";
   return "Other";
 }
 
-// Fetch events from the API
-const fetchEvents = async () => {
+// Load events + the current user's signups
+async function init() {
+  loading.value = true;
   try {
-    const res = await EventServices.getAllEvents();
-    console.log("Full response from getAllEvents:", res);
-    console.log("Fetched events (res.data):", res.data);
+    // 1) Fetch events (might be an array or an Axios response)
+    const evResOrData = await EventServices.getAllEvents();
+    const eventArray = Array.isArray(evResOrData)
+      ? evResOrData
+      : Array.isArray(evResOrData.data)
+        ? evResOrData.data
+        : [];
+    events.value = eventArray;
 
-    let fetchedData = res.data || res; 
-    if (!Array.isArray(fetchedData)) {
-      console.warn("Fetched data is not an array. Using empty array instead.");
-      fetchedData = [];
-    }
-    events.value = fetchedData;
+    // 2) Fetch this user’s signups
+    const suResOrData = await EventServices.getMySignups();
+    const signupIds = Array.isArray(suResOrData.data)
+      ? suResOrData.data
+      : Array.isArray(suResOrData)
+        ? suResOrData
+        : [];
+    signedUp.value = new Set(signupIds);
+
   } catch (err) {
-    console.error("Error fetching events:", err);
+    console.error("Init error:", err);
+    events.value = [];
+    signedUp.value.clear();
+  } finally {
+    loading.value = false;
   }
-};
+}
 
-// Computed list of events filtered by search, type, and date
-const filteredEvents = computed(() => {
-  const searchLower = search.value.toLowerCase();
-  
-  return events.value.filter((event) => {
-    // Safely handle missing fields
-    const name = (event.name || "").toLowerCase();
-    const description = (event.description || "").toLowerCase();
-    const location = (event.location || "").toLowerCase();
-    const dateStr = (event.date || ""); // e.g. "2025-05-20" or "2025-05-20T00:00:00.000Z"
-    
-    // Normalize the event_type to one of our four categories
-    const eventTypeCategory = normalizeEventType(event.event_type);
 
-    // Text search across name, description, event_type, location
-    const textMatch =
-      name.includes(searchLower) ||
-      description.includes(searchLower) ||
-      eventTypeCategory.toLowerCase().includes(searchLower) ||
-      location.includes(searchLower);
-
-    // Type filter: pass if the normalized type is in the selectedTypes array
-    const typeMatch = selectedTypes.value.includes(eventTypeCategory);
-
-    // Date filter: if filterDate is "YYYY-MM-DD", check startsWith
-    let dateMatch = true;
-    if (filterDate.value) {
-      dateMatch = dateStr.startsWith(filterDate.value);
+// Sign up / unregister toggler
+// Sign up / unregister toggler
+async function toggleSignup(eventId) {
+  loading.value = true;
+  try {
+    if (signedUp.value.has(eventId)) {
+      await EventServices.unSignupForEvent(eventId);
+      signedUp.value.delete(eventId);
+    } else {
+      await EventServices.signupForEvent(eventId);
+      signedUp.value.add(eventId);
     }
+  } catch (err) {
+    console.error("Toggle error:", err);
+    alert(err.response?.data?.message || err.message);
+  } finally {
+    loading.value = false;
+  }
+}
+
+
+// Computed, filtered events
+const filteredEvents = computed(() => {
+  const s = search.value.toLowerCase();
+  return events.value.filter(evt => {
+    const name = (evt.name || "").toLowerCase();
+    const desc = (evt.description || "").toLowerCase();
+    const loc  = (evt.location || "").toLowerCase();
+    const date = evt.date || "";
+
+    const cat = normalizeEventType(evt.event_type);
+
+    const textMatch =
+      name.includes(s) ||
+      desc.includes(s) ||
+      cat.toLowerCase().includes(s) ||
+      loc.includes(s);
+
+    const typeMatch = selectedTypes.value.includes(cat);
+    const dateMatch = filterDate.value
+      ? date.startsWith(filterDate.value)
+      : true;
 
     return textMatch && typeMatch && dateMatch;
   });
 });
 
-onMounted(fetchEvents);
+onMounted(init);
 </script>
 
 <template>
@@ -82,9 +108,7 @@ onMounted(fetchEvents);
     <v-card class="mb-4">
       <v-card-title>All Events</v-card-title>
       <v-card-text>
-        <!-- Filters Row -->
         <v-row>
-          <!-- Search Field -->
           <v-col cols="12" md="4">
             <v-text-field
               v-model="search"
@@ -93,8 +117,6 @@ onMounted(fetchEvents);
               clearable
             />
           </v-col>
-
-          <!-- Multi-Select Dropdown for Event Types -->
           <v-col cols="12" md="4">
             <v-select
               v-model="selectedTypes"
@@ -105,8 +127,6 @@ onMounted(fetchEvents);
               chips
             />
           </v-col>
-
-          <!-- Date Filter -->
           <v-col cols="12" md="4">
             <v-text-field
               v-model="filterDate"
@@ -119,25 +139,44 @@ onMounted(fetchEvents);
       </v-card-text>
     </v-card>
 
-    <!-- Cards Display -->
-    <v-row>
+    <!-- Loading -->
+    <v-row justify="center" v-if="loading">
+      <v-progress-circular indeterminate />
+    </v-row>
+
+    <!-- No matches -->
+    <v-row v-else-if="!loading && filteredEvents.length === 0">
+      <v-col class="text-center">No events found.</v-col>
+    </v-row>
+
+    <!-- Event cards -->
+    <v-row v-else>
       <v-col
-        v-for="(event, index) in filteredEvents"
-        :key="index"
+        v-for="evt in filteredEvents"
+        :key="evt.event_id"
         cols="12"
         md="4"
       >
         <v-card class="mb-4">
-          <v-card-title>{{ event.name }}</v-card-title>
+          <v-card-title>{{ evt.name }}</v-card-title>
           <v-card-subtitle>
-            {{ normalizeEventType(event.event_type) }} - {{ event.date }}
+            {{ normalizeEventType(evt.event_type) }} – {{ evt.date }}
           </v-card-subtitle>
           <v-card-text>
-            <strong>Description:</strong> {{ event.description }}<br />
-            <strong>Location:</strong> {{ event.location }}<br />
-            <strong>Start Time:</strong> {{ event.start_time }}<br />
-            <strong>End Time:</strong> {{ event.end_time }}
+            <strong>Description:</strong> {{ evt.description }}<br/>
+            <strong>Location:</strong> {{ evt.location }}<br/>
+            <strong>Start Time:</strong> {{ evt.start_time }}<br/>
+            <strong>End Time:</strong> {{ evt.end_time }}
           </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              :loading="loading"
+              @click="toggleSignup(evt.event_id)"
+            >
+              {{ signedUp.has(evt.event_id) ? 'Unregister' : 'Sign Up' }}
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
