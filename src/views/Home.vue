@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const goToUserProfile = () => {
-  router.push('/user-profile'); // Ensure this route is defined in your router
+  router.push('/profile'); // Ensure this route is defined in your router
 };
 </script>
 

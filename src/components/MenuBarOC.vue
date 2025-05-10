@@ -55,6 +55,15 @@
           <v-divider class="my-3" />
           <p class="text-caption">{{ roleText }}</p>
           <p class="text-caption">Points: {{ currentPoints }}</p>
+          <v-btn
+            class="mb-2"
+            depressed
+            rounded
+            text
+            @click="goToProfile"
+          >
+            My Profile
+          </v-btn>
           <v-divider class="my-3" />
           <v-btn depressed rounded text @click="logout">
             Logout
@@ -129,6 +138,11 @@ const logout = async () => {
     user.value = null;
     router.push({ name: "login" });
   }
+};
+
+// navigate to Profile page
+const goToProfile = () => {
+  router.push({ name: "profile" });
 };
 
 onMounted(resetMenu);
